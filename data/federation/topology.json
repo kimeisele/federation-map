@@ -1,6 +1,6 @@
 {
   "flows": {},
-  "generated_at": "2026-07-19T22:27:52Z",
+  "generated_at": "2026-07-19T23:32:01Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
@@ -89,8 +89,8 @@
         "immune_system",
         "cross_repo_diagnostic"
       ],
-      "depth": 13,
-      "depth_bin": 3,
+      "depth": 56,
+      "depth_bin": 4,
       "flow_sources": [],
       "flow_targets": {},
       "has_authority_feed": false,
@@ -154,7 +154,7 @@
   "summary": {
     "communicating": 3,
     "feeds": 0,
-    "in_flight": 158,
+    "in_flight": 201,
     "total_nodes": 8
   }
 }
