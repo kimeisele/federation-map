@@ -325,6 +325,60 @@ def _compute_topology(
 
 # ── Phase 5: Render ─────────────────────────────────────────────────
 
+INNER = 70  # inner content width (box border chars not included)
+
+# Box drawing constants — computed from INNER
+TOP = "┌" + "─" * INNER + "┐"
+SEP = "├" + "─" * INNER + "┤"
+BOT = "└" + "─" * INNER + "┘"
+
+
+def _dwidth(s: str) -> int:
+    """Display width — all glyphs we use are width-1 in monospace."""
+    return len(s)
+
+
+def _pad(s: str) -> str:
+    """Pad *s* to INNER width and wrap in box borders.
+    *s* carries NO leading/trailing border — _pad adds them.
+    """
+    return "│" + s + " " * max(0, INNER - _dwidth(s)) + "│"
+
+
+def _fit(name: str, width: int = 20) -> str:
+    """Truncate *name* to *width* with ellipsis if needed."""
+    if len(name) <= width:
+        return name
+    return name[: width - 1] + "…"
+
+
+# ── Layer bands (data-driven) ──────────────────────────────────────
+
+# Known layers get curated labels + explicit sort order.
+# Unknown layers keep their own identity (never merged into "OTHER")
+# and sort after known layers, alphabetically.
+LAYER_META: dict[str, tuple[int, str]] = {
+    "visibility": (0, "AKASHA · observation"),
+    "internet":   (1, "INTERNET · relay/transport"),
+    "protocol":   (2, "PROTOCOL · governance/authority"),
+    "node":       (3, "NODE · execution/citizens"),
+}
+
+
+def _layer_order(layer: str) -> tuple[int, str]:
+    lo = layer.lower()
+    if lo in LAYER_META:
+        return (LAYER_META[lo][0], lo)
+    return (99, lo)  # unknown: after known, stable by name
+
+
+def _layer_label(layer: str) -> str:
+    lo = layer.lower()
+    return LAYER_META[lo][1] if lo in LAYER_META else layer.upper()
+
+
+# ── Sparklines / trends ────────────────────────────────────────────
+
 
 def _sparkline(values: list[int], width: int = 5) -> str:
     if not values:
@@ -355,55 +409,36 @@ def _trend_arrow(depth_values: list[int]) -> str:
     return " "
 
 
-def _layer_band(layer: str) -> int:
-    return {"visibility": 0, "internet": 1, "protocol": 2, "node": 3}.get(layer.lower(), 4)
-
-
-def _layer_label(layer: str) -> str:
-    return {
-        "visibility": "AKASHA · observation",
-        "internet": "INTERNET · relay/transport",
-        "protocol": "PROTOCOL · governance/authority",
-        "node": "NODE · execution/citizens",
-    }.get(layer.lower(), layer.upper())
-
-
-W = 68  # inner width between box borders
-
-
-def _pad(line: str) -> str:
-    """Right-pad a line to fit within the box border."""
-    visible = len(line)
-    return line + " " * max(0, W - visible)
-
-
 def _render_terrain(topology: dict, history: list[dict]) -> str:
     nodes = topology["nodes"]
     if not nodes:
-        return f"│  {'(no nodes discovered)':<{W}} │\n"
+        return _pad("  (no nodes discovered)") + "\n"
 
     depth_history: dict[str, list[int]] = {}
     for entry in history:
         for name, d in entry.get("depth", {}).items():
             depth_history.setdefault(name, []).append(d)
 
-    bands: dict[int, list[dict]] = {}
+    # Data-driven: group by actual layer string, ordered by _layer_order
+    bands: dict[str, list[dict]] = {}
     for n in nodes.values():
-        bands.setdefault(_layer_band(n["layer"]), []).append(n)
+        bands.setdefault(n["layer"], []).append(n)
 
-    for band in bands:
-        bands[band].sort(key=lambda n: (0 if n["outbox_reachable"] else 1, -n["depth"]))
+    sorted_layers = sorted(bands.keys(), key=_layer_order)
+    for layer in sorted_layers:
+        bands[layer].sort(key=lambda n: (0 if n["outbox_reachable"] else 1, -n["depth"]))
 
     lines: list[str] = []
-    for band_idx in sorted(bands.keys()):
-        label = _layer_label(list(bands[band_idx])[0]["layer"])
-        lines.append(f"│  {_pad(label)} │")
-        for n in bands[band_idx]:
+    for layer in sorted_layers:
+        label = _layer_label(layer)
+        lines.append(_pad("  " + label))
+        for n in bands[layer]:
             glyph = _activity_glyph(n["depth"], n["outbox_reachable"])
             depth_vals = depth_history.get(n["node_name"], [])
             spark = _sparkline(depth_vals[-8:]) if depth_vals else "─" * 5
             trend = _trend_arrow(depth_vals) if depth_vals else " "
             depth_str = str(n["depth"]) if n["outbox_reachable"] else "—"
+            name = _fit(n["node_name"], 22)
             flags: list[str] = []
             if n["has_authority_feed"]:
                 flags.append("feed")
@@ -421,11 +456,15 @@ def _render_terrain(topology: dict, history: list[dict]) -> str:
                 flags.append("silent")
             flag_str = " · ".join(flags) if flags else ""
             if n["outbox_reachable"]:
-                row = f"    {glyph} {n['node_name']:<22} {spark} {depth_str:>5} {trend}  {flag_str}"
+                row = f"    {glyph} {name:<22} {spark} {depth_str:>5} {trend}  {flag_str}"
             else:
-                row = f"    {glyph} {n['node_name']:<22} {spark} {depth_str:>5}    {flag_str}"
-            lines.append(f"│{_pad(row)} │")
-        lines.append(f"│{'─' * (W + 2)} │")
+                row = f"    {glyph} {name:<22} {spark} {depth_str:>5}    {flag_str}"
+            # Belt-and-suspenders: truncate if still too long
+            if _dwidth(row) > INNER:
+                row = row[: INNER - 1] + "…"
+            lines.append(_pad(row))
+        # Band separator
+        lines.append(_pad("─" * (INNER - 2)))
 
     return "\n".join(lines)
 
@@ -433,7 +472,7 @@ def _render_terrain(topology: dict, history: list[dict]) -> str:
 def _render_flows(topology: dict) -> str:
     flows = topology.get("flows", {})
     if not flows:
-        return f"│  {'(no flow data — envelopes may lack target_city_id)':<{W}} │\n"
+        return _pad("  (no flow data — envelopes may lack target_city_id)") + "\n"
 
     ranked = sorted(flows.items(), key=lambda x: -x[1])
     top_n = ranked[:12]
@@ -449,25 +488,27 @@ def _render_flows(topology: dict) -> str:
     silent = silent - speaking
 
     lines: list[str] = []
-    lines.append(f"│  {'FEDERATION FLOWS · directed, from live NADI envelopes':<{W}} │")
+    lines.append(_pad("  FEDERATION FLOWS · directed, from live NADI envelopes"))
 
     if not top_n:
-        lines.append(f"│  {'(all nodes silent this cycle)':<{W}} │")
+        lines.append(_pad("    (all nodes silent this cycle)"))
     else:
         max_count = top_n[0][1]
         for flow_key, count in top_n:
             source, target = flow_key.split(">", 1)
+            src = _fit(source, 20)
+            tgt = _fit(target, 20)
             bar_len = max(1, round(count / max_count * 4))
             bar = "█" * bar_len
-            row = f"    {source:<20} ──▶ {target:<20} {count:>4}  {bar}"
-            lines.append(f"│{_pad(row)} │")
+            row = f"    {src:<20} ──▶ {tgt:<20} {count:>4}  {bar}"
+            lines.append(_pad(row))
 
     if silent:
         silent_str = ", ".join(sorted(silent))
         row = f"    silent: {silent_str}"
-        if len(row) > W:
-            row = row[:W - 3] + "…"
-        lines.append(f"│{_pad(row)} │")
+        if _dwidth(row) > INNER:
+            row = row[: INNER - 3] + "…"
+        lines.append(_pad(row))
 
     return "\n".join(lines)
 
@@ -498,20 +539,20 @@ def _render_pulse(topology: dict, history: list[dict]) -> str:
     busiest = max(nodes.values(), key=lambda n: n["depth"]) if nodes else None
     quietest = min(nodes.values(), key=lambda n: n["depth"]) if nodes else None
 
-    bar = "▁"
     lines: list[str] = []
-    lines.append(f"│{_pad('  FEDERATION PULSE')} │")
-    lines.append(f"│{_pad(f'    nodes       {total:>3}   {bar * 5}  steady')} │")
-    lines.append(f"│{_pad(f'    comming     {communicating:>3}   {active_spark}  {_trend_arrow(active_hist)}')} │")
-    lines.append(f"│{_pad(f'    in flight   {in_flight:>3}   {flight_spark}  {flight_trend}{delta_str}')} │")
-    lines.append(f"│{_pad(f'    feeds       {feeds}/{total}   {bar * 5}  steady')} │")
+    bar = "▁"
+    lines.append(_pad("  FEDERATION PULSE"))
+    lines.append(_pad(f"    nodes       {total:>3}   {bar * 5}  steady"))
+    lines.append(_pad(f"    comming     {communicating:>3}   {active_spark}  {_trend_arrow(active_hist)}"))
+    lines.append(_pad(f"    in flight   {in_flight:>3}   {flight_spark}  {flight_trend}{delta_str}"))
+    lines.append(_pad(f"    feeds       {feeds}/{total}   {bar * 5}  steady"))
 
     if busiest:
-        row = f"    busiest     {busiest['node_name']} · {busiest['depth']} pending"
-        lines.append(f"│{_pad(row)} │")
+        name = _fit(busiest["node_name"], 20)
+        lines.append(_pad(f"    busiest     {name} · {busiest['depth']} pending"))
     if quietest:
-        row = f"    quietest    {quietest['node_name']} · {quietest['depth']} msgs"
-        lines.append(f"│{_pad(row)} │")
+        name = _fit(quietest["node_name"], 20)
+        lines.append(_pad(f"    quietest    {name} · {quietest['depth']} msgs"))
 
     if busiest and history:
         busiest_depths: list[int] = []
@@ -523,8 +564,8 @@ def _render_pulse(topology: dict, history: list[dict]) -> str:
             busiest_depths[i] <= busiest_depths[i + 1]
             for i in range(len(busiest_depths) - 1)
         ):
-            row = f"    ⚠ {busiest['node_name']} backlog rising {len(busiest_depths)} cycles"
-            lines.append(f"│{_pad(row)} │")
+            warn_name = _fit(busiest["node_name"], 16)
+            lines.append(_pad(f"    ⚠ {warn_name} backlog rising {len(busiest_depths)} cycles"))
 
     return "\n".join(lines)
 
@@ -536,22 +577,22 @@ def _render_full(topology: dict, history: list[dict], cycle: int) -> str:
     flows = _render_flows(topology)
     pulse = _render_pulse(topology, history)
 
-    header1 = f"│  AGENT FEDERATION · TERRAIN           cycle #{cycle} · {ts}"
-    header2 = f"│  elevation = live NADI activity                · ░ ▒ ▓ █  low → high"
-    header3 = f"│  {summary['total_nodes']} nodes · {summary['communicating']} communicating · {summary['in_flight']} in flight · {summary['feeds']}/{summary['total_nodes']} feeds"
+    header1 = f"  AGENT FEDERATION · TERRAIN           cycle #{cycle} · {ts}"
+    header2 = "  elevation = live NADI activity                · ░ ▒ ▓ █  low → high"
+    header3 = f"  {summary['total_nodes']} nodes · {summary['communicating']} communicating · {summary['in_flight']} in flight · {summary['feeds']}/{summary['total_nodes']} feeds"
 
     return f"""\
-┌──────────────────────────────────────────────────────────────────────┐
-{_pad(header1)} │
-{_pad(header2)} │
-{_pad(header3)} │
-├──────────────────────────────────────────────────────────────────────┤
+{TOP}
+{_pad(header1)}
+{_pad(header2)}
+{_pad(header3)}
+{SEP}
 {terrain}
-├──────────────────────────────────────────────────────────────────────┤
+{SEP}
 {flows}
-├──────────────────────────────────────────────────────────────────────┤
+{SEP}
 {pulse}
-└──────────────────────────────────────────────────────────────────────┘"""
+{BOT}"""
 
 
 # ── README injection ────────────────────────────────────────────────
