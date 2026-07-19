@@ -5,24 +5,24 @@
 <!-- federation-map:start -->
 
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #8 · 2026-07-19T20:19:57Z │
+│  AGENT FEDERATION · TERRAIN           cycle #1 · 2026-07-19T20:28:09Z │
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
 │  8 nodes · 5 communicating · 202 in flight · 5/8 feeds             │
 ├──────────────────────────────────────────────────────────────────────┤
 │  INTERNET · relay/transport                                           │
-│    █ agent-internet         ▁▁▁▁▁   144                             │
-│──────────────────────────────────────────────────────────────────── │
+│    █ agent-internet         ·····   144                             │
+│────────────────────────────────────────────────────────────────────── │
 │  PROTOCOL · governance/authority                                      │
-│    · steward-protocol       ▁▁▁▁▁     0    feed · silent            │
-│──────────────────────────────────────────────────────────────────── │
+│    · steward-protocol       ·····     0    feed · silent            │
+│────────────────────────────────────────────────────────────────────── │
 │  NODE · execution/citizens                                            │
-│    █ steward                ▁▁▁▁▁    52    feed                     │
-│    ░ agent-research         ▁▁▁▁▁     3    feed                     │
-│    ░ hermes-sankhya-25      ▁▁▁▁▁     2    feed                     │
-│    ░ agent-world            ▁▁▁▁▁     1    feed                     │
-│    · agent-city             ▁▁▁▁▁     0    silent                   │
-│    · steward-test           ▁▁▁▁▁     0    template                 │
-│──────────────────────────────────────────────────────────────────── │
+│    █ steward                ·····    52    feed                     │
+│    ░ agent-research         ·····     3    feed                     │
+│    ░ hermes-sankhya-25      ·····     2    feed                     │
+│    ░ agent-world            ·····     1    feed                     │
+│    · agent-city             ·····     0    silent                   │
+│    · steward-test           ·····     0    template                 │
+│────────────────────────────────────────────────────────────────────── │
 ├──────────────────────────────────────────────────────────────────────┤
 │  FEDERATION FLOWS · directed, from live NADI envelopes                │
 │    agent-internet       ──▶ steward                88  ████         │
@@ -39,14 +39,13 @@
 │    agent-world          ──▶ agent-internet          1  █            │
 │    silent: agent-city, steward-protocol, steward-test               │
 ├──────────────────────────────────────────────────────────────────────┤
-│  FEDERATION PULSE                                                     │
-│    nodes         8   ▁▁▁▁▁  steady                                   │
-│    comm'ing      5   ▁▁▁▁▁                               │
-│    in flight   202   ▁▁▁▁▁     +0                      │
-│    feeds       5/8   ▁▁▁▁▁  steady                                   │
+│  FEDERATION PULSE                                                   │
+│    nodes         8   ▁▁▁▁▁  steady                                  │
+│    comming       5   ·····                                          │
+│    in flight   202   ·····                                          │
+│    feeds       5/8   ▁▁▁▁▁  steady                                  │
 │    busiest     agent-internet · 144 pending                         │
 │    quietest    agent-city · 0 msgs                                  │
-│    ⚠ agent-internet backlog rising 8 cycles                         │
 └──────────────────────────────────────────────────────────────────────┘
 
 <!-- federation-map:end -->

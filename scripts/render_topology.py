@@ -425,7 +425,7 @@ def _render_terrain(topology: dict, history: list[dict]) -> str:
             else:
                 row = f"    {glyph} {n['node_name']:<22} {spark} {depth_str:>5}    {flag_str}"
             lines.append(f"│{_pad(row)} │")
-        lines.append(f"│{'─' * W} │")
+        lines.append(f"│{'─' * (W + 2)} │")
 
     return "\n".join(lines)
 
@@ -498,12 +498,13 @@ def _render_pulse(topology: dict, history: list[dict]) -> str:
     busiest = max(nodes.values(), key=lambda n: n["depth"]) if nodes else None
     quietest = min(nodes.values(), key=lambda n: n["depth"]) if nodes else None
 
+    bar = "▁"
     lines: list[str] = []
-    lines.append(f"│  {'FEDERATION PULSE':<{W}} │")
-    lines.append(f"│    nodes       {total:>3}   {'▁' * 5}  steady{' ' * (W - 34)} │")
-    lines.append(f"│    comm'ing    {communicating:>3}   {active_spark}  {_trend_arrow(active_hist)}{' ' * max(0, W - 36 - len(active_spark))} │")
-    lines.append(f"│    in flight   {in_flight:>3}   {flight_spark}  {flight_trend}{delta_str}{' ' * max(0, W - 38 - len(flight_spark) - len(delta_str))} │")
-    lines.append(f"│    feeds       {feeds}/{total}   {'▁' * 5}  steady{' ' * (W - 34)} │")
+    lines.append(f"│{_pad('  FEDERATION PULSE')} │")
+    lines.append(f"│{_pad(f'    nodes       {total:>3}   {bar * 5}  steady')} │")
+    lines.append(f"│{_pad(f'    comming     {communicating:>3}   {active_spark}  {_trend_arrow(active_hist)}')} │")
+    lines.append(f"│{_pad(f'    in flight   {in_flight:>3}   {flight_spark}  {flight_trend}{delta_str}')} │")
+    lines.append(f"│{_pad(f'    feeds       {feeds}/{total}   {bar * 5}  steady')} │")
 
     if busiest:
         row = f"    busiest     {busiest['node_name']} · {busiest['depth']} pending"
@@ -686,7 +687,7 @@ def main() -> int:
 
     # ── Phase 4: Topology ────────────────────────────────────────────
     prev_history = _load_history()
-    cycle = len(prev_history) + 1
+    cycle = (prev_history[-1]["cycle"] + 1) if prev_history else 1
 
     topology = _compute_topology(peers, outbox_data, authority_data, prev_history)
     TOPOLOGY_PATH.write_text(json.dumps(topology, indent=2, sort_keys=True) + "\n")
