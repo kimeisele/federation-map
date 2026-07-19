@@ -13,7 +13,7 @@
     "steward>hermes-sankhya-25": 15,
     "steward>steward-federation": 8
   },
-  "generated_at": "2026-07-19T19:58:42Z",
+  "generated_at": "2026-07-19T20:19:57Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
@@ -186,7 +186,7 @@
     }
   },
   "summary": {
-    "active": 8,
+    "communicating": 5,
     "feeds": 5,
     "in_flight": 202,
     "total_nodes": 8
