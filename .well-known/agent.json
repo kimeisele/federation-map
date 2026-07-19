@@ -3,27 +3,26 @@
     "pushNotifications": false,
     "streaming": false
   },
-  "description": "Living topology map of the Agent Federation. Observer node in the Akasha zone.",
+  "description": "Hermes Sankhya-25 \u2014 a federation node",
   "federation": {
     "authority_feed_branch": "authority-feed",
     "descriptor_path": ".well-known/agent-federation.json",
     "interfaces": {
       "consumes": [
-        "federation_descriptor",
-        "agent_card",
-        "health_data"
+        "inquiry_request",
+        "peer_review_challenge"
       ],
       "produces": [
-        "topology_map",
-        "health_snapshot",
-        "peer_registry"
+        "authority_document",
+        "canonical_surface",
+        "public_summary"
       ],
       "protocols": [
-        "nadi-filesystem",
-        "https-raw"
+        "authority_feed_v1",
+        "open_inquiry_v1"
       ]
     },
-    "node_role": "observer",
+    "node_role": "hermes_sankhya_25_contributor",
     "node_topic": "agent-federation-node",
     "peer_discovery": true
   },
@@ -33,14 +32,14 @@
   },
   "skills": [
     {
-      "description": "Renders live ASCII topology maps from real federation data",
-      "id": "topology-rendering",
-      "name": "Topology Rendering"
+      "description": "Authority Publishing capability.",
+      "id": "authority-publishing",
+      "name": "Authority Publishing"
     },
     {
-      "description": "Aggregates health metrics from all reachable federation peers",
-      "id": "health-aggregation",
-      "name": "Health Aggregation"
+      "description": "Inquiry Response capability.",
+      "id": "inquiry-response",
+      "name": "Inquiry Response"
     }
   ],
   "url": "https://github.com/kimeisele/federation-map",
