@@ -1,6 +1,6 @@
-# Federation Map — Specification v0.3
+# Federation Map — Specification v0.4
 
-**Status:** Draft — POC
+**Status:** Draft — POC live; v0.4 adds a second panel (Terra Map)
 **Goal:** A single, auto-generated ASCII **terrain map** of the live Agent Federation, committed into `README.md`. Not an org-chart of boxes — a landscape you read at a glance: where the mesh is busy, who is talking to whom, and how that changes over time. Driven only by federation protocol surfaces. No JavaScript, no web framework, no scraping of internal files.
 
 > **Principle:** Read-only on the federation, and honest about what the data means. Every number on the map comes from a standardized surface every node exposes. We never claim a metric the protocol doesn't actually reveal.
@@ -324,18 +324,81 @@ on:
 
 ---
 
+## Terra Map — the second panel (v0.4)
+
+The three list-panels (Terrain / Flows / Pulse) are a legible **scan** of the federation — but they read flat, like a dashboard. v0.4 adds a second, *spatial* view below them: a **Terra Map**, a Landkarte where a node's **position and its distance to other nodes carry meaning**, derived dynamically from data — never hardcoded coordinates. The scan stays exactly as-is; this is additive.
+
+### The governing principle: structure = geography, activity = weather
+
+A real world map does not move its continents when the weather changes. Paris stays put; the storm passes over it. The Terra Map obeys the same split:
+
+- **Position** comes from *slow, structural* properties (role, layer, capability similarity) → **stable** across cycles. A node only moves when the federation's *structure* changes, not when its traffic does.
+- **Activity** (NADI pulse) is the **weather overlay** → the node's glyph/intensity, redrawn every cycle.
+
+This is not decoration — it is a hard requirement. The map is committed every ~15 min into git history (the flipbook). If positions jumped with every traffic blip, every commit would be a huge diff and the time-lapse would flicker. Continents stable, weather moves.
+
+**Explicitly rejected: force-directed / physics layout.** It looks organic but is unstable (tiny data change → nodes teleport), non-deterministic in spirit, and needs a dense edge set we don't reliably have. It is the over-engineering trap here.
+
+### Coordinate system (emerges from data, nothing hardcoded)
+
+- **Territories (continents) = role / zone.** Whatever roles or zones actually exist in the discovered nodes become the regions. The canvas is partitioned into these territories. A small role→biome label map gives flavour (`RELAY COAST`, `GOVERNANCE HIGHLANDS`, `RESEARCH BASIN`, `OBSERVER ORBIT`, …) with a graceful fallback: an unknown role gets its own territory named after the role. New role types appear as new continents, zero code change — same data-driven discipline as the v0.3 layer bands.
+- **Distance between nodes = capability dissimilarity.** Compute pairwise **Jaccard distance of capability sets**. Nodes with similar capabilities sit close; dissimilar ones drift apart. This is the stable distance backbone, and it is available **today** — capabilities are always in the descriptor.
+- **Later, once Flows work: communication refines distance.** Nodes that actually send to each other pull closer. This is additive on top of the capability backbone — and it is the reason the Flows fix is a prerequisite (see below).
+
+### Layout algorithm (deterministic, stdlib-only, no numpy)
+
+1. Assign each node to its **territory** (from role) → coarse region on the canvas (stable rows/columns per territory).
+2. Within/across territories, place by a **deterministic 1D projection of the capability-distance matrix** (order nodes along an axis so that capability-similar nodes are adjacent). Start simple: territory gives the region, the projection spreads nodes inside it. (A true 2-axis approximate MDS via power-iteration on the double-centered distance matrix is a later upgrade — fine for N ≤ ~50 in pure Python, but not needed for the first cut.)
+3. **Snap** coordinates onto an ASCII canvas grid (e.g. 54×16). On collision (two nodes → same cell), nudge deterministically to the nearest free cell.
+4. **No randomness, seeded ordering** → byte-identical output for identical structure. Positions change only when structure changes.
+
+### Rendering
+
+- A bordered canvas, **inside a fenced code block** (` ``` `) — the v0.5-class lesson from #5: box-drawing art must be fenced or GitHub reflows it to garbage.
+- Faint **territory labels / watermarks** mark the regions; optional biome texture (`~ ≈` for basins, `▲` for highlands, `·` for orbit).
+- Each node is a **marker glyph binned by live activity** (`· ░ ▒ ▓ █`) at its coordinate — the weather.
+- **Identity without crowding:** short inline labels where space allows; otherwise a **numbered legend below** the canvas (`① agent-internet  ② steward  …`). This is how real cartography handles density and is the key to scaling — markers on the grid, names in the legend.
+
+### Metrics that matter here (position / distance only)
+
+| Signal | Drives | Available |
+|--------|--------|-----------|
+| Capability set (Jaccard) | node-to-node **distance** (stable backbone) | ✅ today |
+| Role / zone | **territory** (continent) assignment | ✅ today |
+| Communication flows | **distance** refinement (dynamic) | ⛔ after Flows fix |
+| Authority relationships | optional structural pull | 🟡 partial |
+| Live NADI depth | **weather** glyph (not position) | ✅ today |
+| ~~Programming language~~ | — | ❌ not exposed, federation-irrelevant — deliberately excluded |
+
+### Honest limits
+
+- **ASCII 2D crowds past ~25 nodes.** Mitigation: marker + numbered legend, never inline labels at scale. It will never scale as effortlessly as the list-Terrain — which is exactly why both panels stay: the scan for legibility-at-scale, the Terra Map for spatial intuition.
+- **Distances are stimmig, not metric-exact.** The deterministic projection approximates the distance matrix; a node cluster reads as "related", but you can't measure centimetres off it. Fine for a map.
+- **The map is only as rich as the data.** Until Flows work, distance is capability-only. That's a real, useful map — but the "who-talks-to-whom gravity" arrives with the Flows fix.
+
+### Prerequisites (land before / alongside the Terra Map)
+
+1. **Flows envelope-shape fix** — the live run showed the Flows panel empty (`envelopes may lack target_city_id`); the real NADI envelope schema differs from the assumption. Fixing it (a) fills the existing Flows panel and (b) unlocks the richest distance dimension for the Terra Map. **This is the highest-value next task.**
+2. *(minor)* Authority-feed path fix — live `feeds 0/8` because manifests live on a dedicated `authority-feed` branch, not under `main/authority-feed/`.
+
+### Scope for the Terra Map
+
+**In:** second panel below the scan; territories from role; distance from capability Jaccard; activity as weather glyph; numbered legend; deterministic + fenced. **Out (later):** flow-weighted distance (after Flows fix); true 2-axis MDS; animated drift between cycles. **Unchanged:** Terrain / Flows / Pulse stay exactly as they are.
+
+---
+
 ## Next steps
-1. [x] Spec review → v0.3 (this document)
-2. [ ] Recon: confirm envelope + peer.json field shapes on 2–3 live nodes
-3. [ ] Implement Phase 1 (discovery) + Phase 4/5 Terrain from `.well-known` + `peer.json`
-4. [ ] Add Phase 2 depth + Pulse panel
-5. [ ] Add `history.jsonl` + sparklines
-6. [ ] Add Panel B (Flows) once envelope shape is confirmed
-7. [ ] Heartbeat with commit-hash gating + rebase-before-push
-8. [ ] (Later) NADI inbox listener → become an active member
+1. [x] Spec v0.3 → POC implemented, live, scaling, fenced (merged)
+2. [ ] **Flows envelope-shape fix** — verify real outbox schema, fill Flows panel (prerequisite for Terra Map's dynamic distance)
+3. [ ] Authority-feed path fix (`feeds 0/8` live)
+4. [ ] Terra Map panel — territories from role, distance from capability Jaccard, activity as weather, numbered legend, deterministic + fenced
+5. [ ] (Later) flow-weighted distance once Flows land
+6. [ ] (Later) approximate 2-axis MDS upgrade for the layout
+7. [ ] (Later) NADI inbox listener → become an active member
 
 ---
 
 *v0.1 — Initial spec (scraped internal files — wrong data source).*
 *v0.2 — Rewritten: federation protocol surfaces only. NADI outbox = pulse. No scraping.*
 *v0.3 — Reframed: terrain map, not box-graph (position & elevation carry meaning). Edges from real NADI envelope targets, not the seed list. Honest metric contract (queue depth ≠ health). Time axis via capped `history.jsonl` + git history. Scaling by lists/rows, never edge-routing. Commit-churn gating + fetch-layer (urllib) consistency called out.*
+*v0.4 — Added the Terra Map: a second, spatial panel below the scan where position + distance carry meaning, derived dynamically (territories from role, distance from capability similarity), never hardcoded. Governing principle: structure = geography (stable positions), activity = weather (per-cycle overlay); force-directed physics explicitly rejected for stability. Flows envelope-shape fix named as the prerequisite that unlocks communication-based distance. Terrain / Flows / Pulse unchanged.*
