@@ -1,0 +1,52 @@
+{
+  "capabilities": {},
+  "city": {
+    "element": "Vayu (Air)",
+    "zone": "general"
+  },
+  "description": "Hermes Sankhya-25 \u2014 a federation node",
+  "display_name": "Hermes Sankhya-25",
+  "federation_interfaces": {
+    "consumes": [
+      "inquiry_request",
+      "peer_review_challenge"
+    ],
+    "produces": [
+      "authority_document",
+      "canonical_surface",
+      "public_summary"
+    ],
+    "protocols": [
+      "authority_feed_v1",
+      "open_inquiry_v1"
+    ]
+  },
+  "kind": "agent_capability_manifest",
+  "node_id": "hermes-sankhya-25",
+  "node_role": "hermes_sankhya_25_contributor",
+  "protocols": [
+    {
+      "descriptor": ".well-known/agent-federation.json",
+      "name": "agent-federation",
+      "version": 1
+    },
+    {
+      "descriptor": ".well-known/agent.json",
+      "name": "a2a-agent-card",
+      "version": "1.0.0"
+    }
+  ],
+  "skills": [
+    {
+      "description": "Authority Publishing capability.",
+      "id": "authority-publishing",
+      "name": "Authority Publishing"
+    },
+    {
+      "description": "Inquiry Response capability.",
+      "id": "inquiry-response",
+      "name": "Inquiry Response"
+    }
+  ],
+  "version": 1
+}

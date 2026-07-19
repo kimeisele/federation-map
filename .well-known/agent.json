@@ -1,0 +1,48 @@
+{
+  "capabilities": {
+    "pushNotifications": false,
+    "streaming": false
+  },
+  "description": "Living topology map of the Agent Federation. Observer node in the Akasha zone.",
+  "federation": {
+    "authority_feed_branch": "authority-feed",
+    "descriptor_path": ".well-known/agent-federation.json",
+    "interfaces": {
+      "consumes": [
+        "federation_descriptor",
+        "agent_card",
+        "health_data"
+      ],
+      "produces": [
+        "topology_map",
+        "health_snapshot",
+        "peer_registry"
+      ],
+      "protocols": [
+        "nadi-filesystem",
+        "https-raw"
+      ]
+    },
+    "node_role": "observer",
+    "node_topic": "agent-federation-node",
+    "peer_discovery": true
+  },
+  "name": "Federation Map",
+  "provider": {
+    "organization": "kimeisele"
+  },
+  "skills": [
+    {
+      "description": "Renders live ASCII topology maps from real federation data",
+      "id": "topology-rendering",
+      "name": "Topology Rendering"
+    },
+    {
+      "description": "Aggregates health metrics from all reachable federation peers",
+      "id": "health-aggregation",
+      "name": "Health Aggregation"
+    }
+  ],
+  "url": "https://github.com/kimeisele/federation-map",
+  "version": "1.0.0"
+}
