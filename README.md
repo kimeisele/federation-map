@@ -5,45 +5,31 @@
 <!-- federation-map:start -->
 
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #3 · 2026-07-19T20:45:06Z│
+│  AGENT FEDERATION · TERRAIN           cycle #4 · 2026-07-19T20:56:22Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
-│  8 nodes · 5 communicating · 202 in flight · 5/8 feeds               │
+│  8 nodes · 2 communicating · 145 in flight · 0/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
 │  INTERNET · relay/transport                                          │
-│    █ agent-internet         ▁▁   144                                 │
-│────────────────────────────────────────────────────────────────────  │
-│  PROTOCOL · governance/authority                                     │
-│    · steward-protocol       ▁▁     0    feed · silent                │
+│    █ agent-internet         ▁▁▁   144                                │
 │────────────────────────────────────────────────────────────────────  │
 │  NODE · execution/citizens                                           │
-│    █ steward                ▁▁    52    feed                         │
-│    ░ agent-research         ▁▁     3    feed                         │
-│    ░ hermes-sankhya-25      ▁▁     2    feed                         │
-│    ░ agent-world            ▁▁     1    feed                         │
-│    · agent-city             ▁▁     0    silent                       │
-│    · steward-test           ▁▁     0    template                     │
+│    ░ steward-test             ▁▁█     1 ↑  template                  │
+│    · agent-city             ▁▁▁     0    silent                      │
+│    · agent-world              ██▁     0 ↓  silent                    │
+│    · steward-protocol       ▁▁▁     0    silent                      │
+│    · steward                  ██▁     0 ↓  silent                    │
+│    ─ steward-federation     ·····     —    unreachable               │
+│    ─ agent-research           ██▁     —    unreachable               │
 │────────────────────────────────────────────────────────────────────  │
 ├──────────────────────────────────────────────────────────────────────┤
-│  FEDERATION FLOWS · directed, from live NADI envelopes               │
-│    agent-internet       ──▶ steward                88  ████          │
-│    agent-internet       ──▶ agent-research         41  ██            │
-│    steward              ──▶ hermes-sankhya-25      15  █             │
-│    steward              ──▶ agent-city             12  █             │
-│    agent-internet       ──▶ agent-city             10  █             │
-│    steward              ──▶ agent-internet          9  █             │
-│    steward              ──▶ agent-research          8  █             │
-│    steward              ──▶ steward-federation      8  █             │
-│    agent-internet       ──▶ hermes-sankhya-25       5  █             │
-│    agent-research       ──▶ agent-internet          3  █             │
-│    hermes-sankhya-25    ──▶ agent-internet          2  █             │
-│    agent-world          ──▶ agent-internet          1  █             │
-│    silent: agent-city, steward-protocol, steward-test                │
+│  (no flow data — envelopes may lack target_city_id)                  │
+
 ├──────────────────────────────────────────────────────────────────────┤
 │  FEDERATION PULSE                                                    │
 │    nodes         8   ▁▁▁▁▁  steady                                   │
-│    comming       5     █▁▁  ↓                                        │
-│    in flight   202     █▁▁  ↓  +0                                    │
-│    feeds       5/8   ▁▁▁▁▁  steady                                   │
+│    comming       2    █▂▂▁  ↓                                        │
+│    in flight   145    █▂▂▁  ↓  -57                                   │
+│    feeds       0/8   ▁▁▁▁▁  steady                                   │
 │    busiest     agent-internet · 144 pending                          │
 │    quietest    agent-city · 0 msgs                                   │
 └──────────────────────────────────────────────────────────────────────┘

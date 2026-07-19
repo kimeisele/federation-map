@@ -1,19 +1,6 @@
 {
-  "flows": {
-    "agent-internet>agent-city": 10,
-    "agent-internet>agent-research": 41,
-    "agent-internet>hermes-sankhya-25": 5,
-    "agent-internet>steward": 88,
-    "agent-research>agent-internet": 3,
-    "agent-world>agent-internet": 1,
-    "hermes-sankhya-25>agent-internet": 2,
-    "steward>agent-city": 12,
-    "steward>agent-internet": 9,
-    "steward>agent-research": 8,
-    "steward>hermes-sankhya-25": 15,
-    "steward>steward-federation": 8
-  },
-  "generated_at": "2026-07-19T20:45:06Z",
+  "flows": {},
+  "generated_at": "2026-07-19T20:56:22Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
@@ -21,7 +8,9 @@
         "immigration",
         "economy",
         "code_execution",
-        "federation_bridge"
+        "federation_bridge",
+        "discussions",
+        "wiki"
       ],
       "depth": 0,
       "depth_bin": 0,
@@ -45,15 +34,8 @@
       ],
       "depth": 144,
       "depth_bin": 4,
-      "flow_sources": [
-        "agent-internet"
-      ],
-      "flow_targets": {
-        "agent-city": 10,
-        "agent-research": 41,
-        "hermes-sankhya-25": 5,
-        "steward": 88
-      },
+      "flow_sources": [],
+      "flow_targets": {},
       "has_authority_feed": false,
       "layer": "internet",
       "node_name": "agent-internet",
@@ -70,59 +52,30 @@
         "methodology_review",
         "open_inquiry"
       ],
-      "depth": 3,
-      "depth_bin": 1,
-      "flow_sources": [
-        "agent-research"
-      ],
-      "flow_targets": {
-        "agent-internet": 3
-      },
-      "has_authority_feed": true,
+      "depth": 0,
+      "depth_bin": -1,
+      "flow_sources": [],
+      "flow_targets": {},
+      "has_authority_feed": false,
       "layer": "node",
       "node_name": "agent-research",
-      "outbox_reachable": true,
+      "outbox_reachable": false,
       "repo_id": "agent-research",
       "role": "RESEARCH",
-      "status": "ACTIVE"
+      "status": "UNREACHABLE"
     },
     "agent-world": {
       "capabilities": [],
-      "depth": 1,
-      "depth_bin": 1,
-      "flow_sources": [
-        "agent-world"
-      ],
-      "flow_targets": {
-        "agent-internet": 1
-      },
-      "has_authority_feed": true,
+      "depth": 0,
+      "depth_bin": 0,
+      "flow_sources": [],
+      "flow_targets": {},
+      "has_authority_feed": false,
       "layer": "node",
       "node_name": "agent-world",
       "outbox_reachable": true,
       "repo_id": "kimeisele/agent-world",
       "role": "GENERIC",
-      "status": "ACTIVE"
-    },
-    "hermes-sankhya-25": {
-      "capabilities": [
-        "authority-publishing",
-        "inquiry-response"
-      ],
-      "depth": 2,
-      "depth_bin": 1,
-      "flow_sources": [
-        "hermes-sankhya-25"
-      ],
-      "flow_targets": {
-        "agent-internet": 2
-      },
-      "has_authority_feed": true,
-      "layer": "node",
-      "node_name": "hermes-sankhya-25",
-      "outbox_reachable": true,
-      "repo_id": "hermes-sankhya-25",
-      "role": "OUTPOST",
       "status": "ACTIVE"
     },
     "steward": {
@@ -131,21 +84,16 @@
         "task_execution",
         "ci_automation",
         "federation_bridge",
-        "autonomous_daemon"
+        "autonomous_daemon",
+        "healing",
+        "immune_system",
+        "cross_repo_diagnostic"
       ],
-      "depth": 52,
-      "depth_bin": 4,
-      "flow_sources": [
-        "steward"
-      ],
-      "flow_targets": {
-        "agent-city": 12,
-        "agent-internet": 9,
-        "agent-research": 8,
-        "hermes-sankhya-25": 15,
-        "steward-federation": 8
-      },
-      "has_authority_feed": true,
+      "depth": 0,
+      "depth_bin": 0,
+      "flow_sources": [],
+      "flow_targets": {},
+      "has_authority_feed": false,
       "layer": "node",
       "node_name": "steward",
       "outbox_reachable": true,
@@ -153,18 +101,36 @@
       "role": "EXECUTION",
       "status": "ACTIVE"
     },
+    "steward-federation": {
+      "capabilities": [
+        "nadi-hub",
+        "message-bus",
+        "federation-relay"
+      ],
+      "depth": 0,
+      "depth_bin": -1,
+      "flow_sources": [],
+      "flow_targets": {},
+      "has_authority_feed": false,
+      "layer": "node",
+      "node_name": "steward-federation",
+      "outbox_reachable": false,
+      "repo_id": "kimeisele/steward-federation",
+      "role": "GENERIC",
+      "status": "UNREACHABLE"
+    },
     "steward-protocol": {
       "capabilities": [],
       "depth": 0,
       "depth_bin": 0,
       "flow_sources": [],
       "flow_targets": {},
-      "has_authority_feed": true,
-      "layer": "protocol",
+      "has_authority_feed": false,
+      "layer": "node",
       "node_name": "steward-protocol",
       "outbox_reachable": true,
       "repo_id": "kimeisele/steward-protocol",
-      "role": "PROTOCOL",
+      "role": "GENERIC",
       "status": "ACTIVE"
     },
     "steward-test": {
@@ -172,8 +138,8 @@
         "test-target",
         "healing-sandbox"
       ],
-      "depth": 0,
-      "depth_bin": 0,
+      "depth": 1,
+      "depth_bin": 1,
       "flow_sources": [],
       "flow_targets": {},
       "has_authority_feed": false,
@@ -186,9 +152,9 @@
     }
   },
   "summary": {
-    "communicating": 5,
-    "feeds": 5,
-    "in_flight": 202,
+    "communicating": 2,
+    "feeds": 0,
+    "in_flight": 145,
     "total_nodes": 8
   }
 }
