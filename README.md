@@ -4,6 +4,7 @@
 
 <!-- federation-map:start -->
 
+```
 ┌──────────────────────────────────────────────────────────────────────┐
 │  AGENT FEDERATION · TERRAIN           cycle #4 · 2026-07-19T20:56:22Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
@@ -33,6 +34,7 @@
 │    busiest     agent-internet · 144 pending                          │
 │    quietest    agent-city · 0 msgs                                   │
 └──────────────────────────────────────────────────────────────────────┘
+```
 
 <!-- federation-map:end -->
 
