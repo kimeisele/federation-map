@@ -1,9 +1,8 @@
 {
-  "authority_feed_manifest_url": "https://raw.githubusercontent.com/kimeisele/hermes-sankhya-25/authority-feed/latest-authority-manifest.json",
+  "authority_feed_manifest_url": "https://raw.githubusercontent.com/kimeisele/federation-map/authority-feed/latest-authority-manifest.json",
   "capabilities": [
-    "federation-visualization",
-    "topology-rendering",
-    "health-aggregation"
+    "authority-publishing",
+    "inquiry-response"
   ],
   "display_name": "Federation Map",
   "endpoints": {
@@ -11,12 +10,12 @@
     "federation_descriptor": ".well-known/agent-federation.json"
   },
   "kind": "agent_federation_descriptor",
-  "layer": "visibility",
-  "owner_boundary": "hermes_sankhya_25_surface",
+  "layer": "node",
+  "owner_boundary": "federation_map_surface",
   "projection_intents": [
-    "public_topology_map"
+    "public_authority_page"
   ],
-  "repo_id": "kimeisele/federation-map",
+  "repo_id": "federation-map",
   "status": "active",
   "version": 1
 }
