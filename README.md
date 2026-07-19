@@ -6,21 +6,21 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #5 · 2026-07-19T21:27:38Z│
+│  AGENT FEDERATION · TERRAIN           cycle #6 · 2026-07-19T22:27:52Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
-│  8 nodes · 3 communicating · 197 in flight · 0/8 feeds               │
+│  8 nodes · 3 communicating · 158 in flight · 0/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
 │  INTERNET · relay/transport                                          │
-│    █ agent-internet         ▁▁▁▁   144                               │
+│    █ agent-internet         ▁▁▁▁▁   144                              │
 │────────────────────────────────────────────────────────────────────  │
 │  NODE · execution/citizens                                           │
-│    █ steward                 ██▁█    52                              │
-│    ░ steward-test            ▁▁██     1 ↑  template                  │
-│    · agent-city             ▁▁▁▁     0    silent                     │
-│    · agent-world             ██▁▁     0 ↓  silent                    │
-│    · steward-protocol       ▁▁▁▁     0    silent                     │
-│    ─ steward-federation     ▁▁     —    unreachable                  │
-│    ─ agent-research          ██▁▁     —    unreachable               │
+│    ▓ steward                ██▁█▃    13 ↑                            │
+│    ░ steward-test           ▁▁███     1    template                  │
+│    · agent-city             ▁▁▁▁▁     0    silent                    │
+│    · agent-world            ██▁▁▁     0    silent                    │
+│    · steward-protocol       ▁▁▁▁▁     0    silent                    │
+│    ─ steward-federation     ▁▁▁     —    unreachable                 │
+│    ─ agent-research         ██▁▁▁     —    unreachable               │
 │────────────────────────────────────────────────────────────────────  │
 ├──────────────────────────────────────────────────────────────────────┤
 │  (no flow data — envelopes may lack target_city_id)                  │
@@ -28,8 +28,8 @@
 ├──────────────────────────────────────────────────────────────────────┤
 │  FEDERATION PULSE                                                    │
 │    nodes         8   ▁▁▁▁▁  steady                                   │
-│    comming       3   █▂▂▁▁  ↓                                        │
-│    in flight   197   █▂▂▁▂  ↓  +52                                   │
+│    comming       3   ▂▂▁▁▁  ↑                                        │
+│    in flight   158   ▂▂▁▂▁  ↑  -39                                   │
 │    feeds       0/8   ▁▁▁▁▁  steady                                   │
 │    busiest     agent-internet · 144 pending                          │
 │    quietest    agent-city · 0 msgs                                   │
