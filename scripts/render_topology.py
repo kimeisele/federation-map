@@ -608,7 +608,10 @@ def _inject_into_readme(map_text: str) -> bool:
         return False
     before = content[: start_idx + len(MARKER_START)]
     after = content[end_idx:]
-    new_content = before + "\n\n" + map_text + "\n\n" + after
+    # Wrap in a fenced code block so GitHub renders the box-drawing art in a
+    # monospace font — without the fence, markdown reflows it into garbage.
+    fenced = "```\n" + map_text + "\n```"
+    new_content = before + "\n\n" + fenced + "\n\n" + after
     if new_content == content:
         return False
     README_PATH.write_text(new_content)
