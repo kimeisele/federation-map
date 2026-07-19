@@ -1,0 +1,18 @@
+{
+  "capabilities": [
+    "governance",
+    "immigration",
+    "economy",
+    "code_execution",
+    "federation_bridge"
+  ],
+  "display_name": "Agent City",
+  "endpoints": {
+    "federation_descriptor": ".well-known/agent-federation.json"
+  },
+  "kind": "agent_federation_descriptor",
+  "layer": "node",
+  "repo_id": "kimeisele/agent-city",
+  "status": "active",
+  "version": 1
+}

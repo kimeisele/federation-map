@@ -1,0 +1,24 @@
+{
+  "capabilities": [
+    "governance",
+    "immigration",
+    "economy",
+    "code_execution",
+    "federation_bridge"
+  ],
+  "endpoint": {
+    "city_id": "agent-city",
+    "location": "data/federation",
+    "transport": "filesystem"
+  },
+  "identity": {
+    "city_id": "agent-city",
+    "public_key": "",
+    "repo": "kimeisele/agent-city",
+    "slug": "agent-city"
+  },
+  "nadi": {
+    "inbox": "data/federation/nadi_inbox.json",
+    "outbox": "data/federation/nadi_outbox.json"
+  }
+}

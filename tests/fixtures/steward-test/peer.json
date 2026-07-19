@@ -1,0 +1,22 @@
+{
+  "capabilities": [
+    "test-target",
+    "healing-sandbox",
+    "test-execution"
+  ],
+  "endpoint": {
+    "city_id": "steward-test",
+    "location": "data/federation",
+    "transport": "filesystem"
+  },
+  "identity": {
+    "city_id": "steward-test",
+    "public_key": "",
+    "repo": "kimeisele/steward-test",
+    "slug": "steward-test"
+  },
+  "nadi": {
+    "inbox": "data/federation/nadi_inbox.json",
+    "outbox": "data/federation/nadi_outbox.json"
+  }
+}

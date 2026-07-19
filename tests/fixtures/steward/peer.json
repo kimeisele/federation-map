@@ -1,0 +1,24 @@
+{
+  "capabilities": [
+    "code_analysis",
+    "task_execution",
+    "ci_automation",
+    "federation_bridge",
+    "autonomous_daemon"
+  ],
+  "endpoint": {
+    "city_id": "steward",
+    "location": "data/federation",
+    "transport": "filesystem"
+  },
+  "identity": {
+    "city_id": "steward",
+    "public_key": "",
+    "repo": "kimeisele/steward",
+    "slug": "steward"
+  },
+  "nadi": {
+    "inbox": "data/federation/nadi_inbox.json",
+    "outbox": "data/federation/nadi_outbox.json"
+  }
+}

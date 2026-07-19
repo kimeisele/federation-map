@@ -1,0 +1,21 @@
+{
+  "capabilities": [
+    "authority-publishing",
+    "inquiry-response"
+  ],
+  "endpoint": {
+    "city_id": "hermes-sankhya-25",
+    "location": "data/federation",
+    "transport": "filesystem"
+  },
+  "identity": {
+    "city_id": "hermes-sankhya-25",
+    "public_key": "",
+    "repo": "kimeisele/hermes-sankhya-25",
+    "slug": "hermes-sankhya-25"
+  },
+  "nadi": {
+    "inbox": "data/federation/nadi_inbox.json",
+    "outbox": "data/federation/nadi_outbox.json"
+  }
+}

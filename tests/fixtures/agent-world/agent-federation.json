@@ -1,0 +1,12 @@
+{
+  "capabilities": [],
+  "display_name": "Agent World",
+  "endpoints": {
+    "federation_descriptor": ".well-known/agent-federation.json"
+  },
+  "kind": "agent_federation_descriptor",
+  "layer": "node",
+  "repo_id": "kimeisele/agent-world",
+  "status": "active",
+  "version": 1
+}

@@ -1,0 +1,23 @@
+{
+  "capabilities": [
+    "authority-publishing",
+    "inquiry-response",
+    "world_registry",
+    "public_wiki"
+  ],
+  "endpoint": {
+    "city_id": "agent-world",
+    "location": "data/federation",
+    "transport": "filesystem"
+  },
+  "identity": {
+    "city_id": "agent-world",
+    "public_key": "",
+    "repo": "kimeisele/agent-world",
+    "slug": "agent-world"
+  },
+  "nadi": {
+    "inbox": "data/federation/nadi_inbox.json",
+    "outbox": "data/federation/nadi_outbox.json"
+  }
+}

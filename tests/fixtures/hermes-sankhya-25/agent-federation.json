@@ -1,0 +1,15 @@
+{
+  "capabilities": [
+    "authority-publishing",
+    "inquiry-response"
+  ],
+  "display_name": "Hermes Sankhya 25",
+  "endpoints": {
+    "federation_descriptor": ".well-known/agent-federation.json"
+  },
+  "kind": "agent_federation_descriptor",
+  "layer": "node",
+  "repo_id": "hermes-sankhya-25",
+  "status": "active",
+  "version": 1
+}

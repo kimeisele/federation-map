@@ -1,0 +1,15 @@
+[
+  {
+    "correlation_id": "w1",
+    "envelope_id": "we1",
+    "nadi_op": "heartbeat",
+    "nadi_type": "filesystem",
+    "operation": "heartbeat",
+    "payload": {},
+    "priority": 5,
+    "source_city_id": "agent-world",
+    "target_city_id": "agent-internet",
+    "timestamp": 1752930000.0,
+    "ttl_ms": 300000
+  }
+]

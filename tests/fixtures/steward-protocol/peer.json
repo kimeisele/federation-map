@@ -1,0 +1,23 @@
+{
+  "capabilities": [
+    "protocol-definition",
+    "authority-publishing",
+    "canonical-surface",
+    "public-summary"
+  ],
+  "endpoint": {
+    "city_id": "steward-protocol",
+    "location": "data/federation",
+    "transport": "filesystem"
+  },
+  "identity": {
+    "city_id": "steward-protocol",
+    "public_key": "",
+    "repo": "kimeisele/steward-protocol",
+    "slug": "steward-protocol"
+  },
+  "nadi": {
+    "inbox": "data/federation/nadi_inbox.json",
+    "outbox": "data/federation/nadi_outbox.json"
+  }
+}

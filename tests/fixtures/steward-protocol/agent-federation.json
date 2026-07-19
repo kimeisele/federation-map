@@ -1,0 +1,12 @@
+{
+  "capabilities": [],
+  "display_name": "Steward Protocol",
+  "endpoints": {
+    "federation_descriptor": ".well-known/agent-federation.json"
+  },
+  "kind": "agent_federation_descriptor",
+  "layer": "protocol",
+  "repo_id": "kimeisele/steward-protocol",
+  "status": "active",
+  "version": 1
+}

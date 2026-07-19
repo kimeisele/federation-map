@@ -1,0 +1,18 @@
+{
+  "capabilities": [
+    "code_analysis",
+    "task_execution",
+    "ci_automation",
+    "federation_bridge",
+    "autonomous_daemon"
+  ],
+  "display_name": "Steward",
+  "endpoints": {
+    "federation_descriptor": ".well-known/agent-federation.json"
+  },
+  "kind": "agent_federation_descriptor",
+  "layer": "node",
+  "repo_id": "kimeisele/steward",
+  "status": "active",
+  "version": 1
+}
