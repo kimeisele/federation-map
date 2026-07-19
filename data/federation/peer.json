@@ -1,0 +1,22 @@
+{
+  "capabilities": [
+    "federation-visualization",
+    "topology-rendering",
+    "health-aggregation"
+  ],
+  "endpoint": {
+    "city_id": "federation-map",
+    "location": "data/federation",
+    "transport": "filesystem"
+  },
+  "identity": {
+    "city_id": "federation-map",
+    "public_key": "",
+    "repo": "kimeisele/federation-map",
+    "slug": "federation-map"
+  },
+  "nadi": {
+    "inbox": "data/federation/nadi_inbox.json",
+    "outbox": "data/federation/nadi_outbox.json"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "capabilities": [
+    "test-target",
+    "healing-sandbox"
+  ],
+  "display_name": "Steward Test",
+  "endpoints": {
+    "federation_descriptor": ".well-known/agent-federation.json"
+  },
+  "kind": "agent_federation_descriptor",
+  "layer": "node",
+  "repo_id": "kimeisele/steward-test",
+  "status": "active",
+  "version": 1
+}

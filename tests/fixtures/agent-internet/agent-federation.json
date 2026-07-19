@@ -1,0 +1,18 @@
+{
+  "capabilities": [
+    "nadi-relay",
+    "federation-discovery",
+    "lotus-addressing",
+    "semantic-search",
+    "authority-projection"
+  ],
+  "display_name": "Agent Internet",
+  "endpoints": {
+    "federation_descriptor": ".well-known/agent-federation.json"
+  },
+  "kind": "agent_federation_descriptor",
+  "layer": "internet",
+  "repo_id": "kimeisele/agent-internet",
+  "status": "active",
+  "version": 1
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "correlation_id": "r1",
+    "envelope_id": "re1",
+    "nadi_op": "inquiry",
+    "nadi_type": "filesystem",
+    "operation": "inquiry",
+    "payload": {
+      "question": "dark matter"
+    },
+    "priority": 3,
+    "source_city_id": "agent-research",
+    "target_city_id": "agent-internet",
+    "timestamp": 1752930000.0,
+    "ttl_ms": 300000
+  },
+  {
+    "correlation_id": "r1",
+    "envelope_id": "re1",
+    "nadi_op": "inquiry",
+    "nadi_type": "filesystem",
+    "operation": "inquiry",
+    "payload": {
+      "question": "dark matter"
+    },
+    "priority": 3,
+    "source_city_id": "agent-research",
+    "target_city_id": "agent-internet",
+    "timestamp": 1752930000.0,
+    "ttl_ms": 300000
+  },
+  {
+    "correlation_id": "r1",
+    "envelope_id": "re1",
+    "nadi_op": "inquiry",
+    "nadi_type": "filesystem",
+    "operation": "inquiry",
+    "payload": {
+      "question": "dark matter"
+    },
+    "priority": 3,
+    "source_city_id": "agent-research",
+    "target_city_id": "agent-internet",
+    "timestamp": 1752930000.0,
+    "ttl_ms": 300000
+  }
+]

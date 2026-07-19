@@ -1,0 +1,21 @@
+{
+  "capabilities": [
+    "research_synthesis",
+    "cross_domain_analysis"
+  ],
+  "endpoint": {
+    "city_id": "agent-research",
+    "location": "data/federation",
+    "transport": "filesystem"
+  },
+  "identity": {
+    "city_id": "agent-research",
+    "public_key": "",
+    "repo": "agent-research",
+    "slug": "agent-research"
+  },
+  "nadi": {
+    "inbox": "data/federation/nadi_inbox.json",
+    "outbox": "data/federation/nadi_outbox.json"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "capabilities": [
+    "research_synthesis",
+    "cross_domain_analysis",
+    "meta_analysis",
+    "methodology_review",
+    "open_inquiry"
+  ],
+  "display_name": "Agent Research",
+  "endpoints": {
+    "federation_descriptor": ".well-known/agent-federation.json"
+  },
+  "kind": "agent_federation_descriptor",
+  "layer": "node",
+  "repo_id": "agent-research",
+  "status": "active",
+  "version": 1
+}

@@ -1,0 +1,104 @@
+[
+  {
+    "capabilities": [
+      "governance",
+      "immigration",
+      "economy",
+      "code_execution",
+      "federation_bridge"
+    ],
+    "city_id": "agent-city",
+    "layer": "node",
+    "node_name": "agent-city",
+    "repo_id": "kimeisele/agent-city",
+    "status": "active",
+    "transport": "filesystem"
+  },
+  {
+    "capabilities": [
+      "nadi-relay",
+      "federation-discovery",
+      "lotus-addressing",
+      "semantic-search",
+      "authority-projection"
+    ],
+    "city_id": "agent-internet",
+    "layer": "internet",
+    "node_name": "agent-internet",
+    "repo_id": "kimeisele/agent-internet",
+    "status": "active",
+    "transport": "filesystem"
+  },
+  {
+    "capabilities": [
+      "research_synthesis",
+      "cross_domain_analysis",
+      "meta_analysis",
+      "methodology_review",
+      "open_inquiry"
+    ],
+    "city_id": "agent-research",
+    "layer": "node",
+    "node_name": "agent-research",
+    "repo_id": "agent-research",
+    "status": "active",
+    "transport": "filesystem"
+  },
+  {
+    "capabilities": [],
+    "city_id": "agent-world",
+    "layer": "node",
+    "node_name": "agent-world",
+    "repo_id": "kimeisele/agent-world",
+    "status": "active",
+    "transport": "filesystem"
+  },
+  {
+    "capabilities": [
+      "authority-publishing",
+      "inquiry-response"
+    ],
+    "city_id": "hermes-sankhya-25",
+    "layer": "node",
+    "node_name": "hermes-sankhya-25",
+    "repo_id": "hermes-sankhya-25",
+    "status": "active",
+    "transport": "filesystem"
+  },
+  {
+    "capabilities": [
+      "code_analysis",
+      "task_execution",
+      "ci_automation",
+      "federation_bridge",
+      "autonomous_daemon"
+    ],
+    "city_id": "steward",
+    "layer": "node",
+    "node_name": "steward",
+    "repo_id": "kimeisele/steward",
+    "status": "active",
+    "transport": "filesystem"
+  },
+  {
+    "capabilities": [],
+    "city_id": "steward-protocol",
+    "layer": "protocol",
+    "node_name": "steward-protocol",
+    "repo_id": "kimeisele/steward-protocol",
+    "status": "active",
+    "transport": "filesystem"
+  },
+  {
+    "capabilities": [
+      "test-target",
+      "healing-sandbox"
+    ],
+    "city_id": "steward-test",
+    "layer": "node",
+    "node_name": "steward-test",
+    "repo_id": "kimeisele/steward-test",
+    "status": "active",
+    "transport": "filesystem"
+  }
+]
