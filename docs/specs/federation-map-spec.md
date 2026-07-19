@@ -1,73 +1,83 @@
-# Federation Map — Specification v0.1
+# Federation Map — Specification v0.2
 
 **Status:** Draft — POC
-**Goal:** A single-file, auto-generated, ASCII-art topology map of the live Agent Federation. No JavaScript. No web framework. No gimmicks. One README that shows the federation breathing.
+**Goal:** A single-file, auto-generated, ASCII-art topology map of the live Agent Federation. Driven by federation protocols, not URL scraping. Every data point comes from `.well-known/`, NADI, or the authority feed.
 
-> **Principle:** Read-only on the federation. This repo only writes its own data. Every metric comes from a real, fetchable URL on an existing federation node.
+> **Principle:** Read-only on the federation. This node observes via the same protocols every other node uses. No shortcuts through internal files. No assumptions about what another node stores where.
 
 ---
 
 ## NORTH STAR
 
-**Make the invisible federation visible.** A new developer — or any federation agent — should be able to open one README and see within 5 seconds: who is alive, who is talking to whom, and what the health of the mesh is.
-
-No dashboards. No Grafana. No login. `curl`-able. `git clone`-able. Agent-parseable.
+**Make the invisible federation visible — through its own protocols.** A developer, agent, or curious outsider opens one README and sees what the federation *declares about itself* through its standardized surfaces.
 
 ---
 
 ## What This Is NOT
 
-- ❌ A monitoring service with alerts
+- ❌ A scraper that reads arbitrary files from other repos
 - ❌ A replacement for steward's Reaper or Health-Observer
 - ❌ A web app, dashboard, or hosted service
 - ❌ A modification to any existing federation node
-- ❌ A gimmick that generates pretty pictures from fake data
 
 ## What This IS
 
-- ✅ A federation node (forked from agent-template pattern)
-- ✅ A deterministic script that fetches real data from real peers
-- ✅ One ASCII-art map rendered into a Markdown file
-- ✅ One structured data file (JSON) for agent consumption
-- ✅ A GitHub Actions heartbeat that regenerates on schedule
-- ✅ A public face for the federation
+- ✅ A federation node (built from agent-template)
+- ✅ A passive observer that reads federation-standard surfaces only
+- ✅ One ASCII-art map rendered into README.md
+- ✅ Structured data files (`topology.json`, `peers.json`) for agent consumption
+- ✅ A GitHub Actions heartbeat on the federation's own rhythm
+- ✅ A public face for the federation — the thing you send someone to say "look, it's alive"
 
 ---
 
-## Data Sources (all read-only, all exist today)
+## Federation Protocols (the only data paths we use)
 
-### Tier 1 — Always Available (every federation node has these)
+Every federation node exposes these standardized surfaces. These are the contract. Nothing else.
 
-| Source | URL Pattern | What It Provides |
-|--------|-------------|-----------------|
-| Federation Descriptor | `{repo}/main/.well-known/agent-federation.json` | `kind`, `status`, `repo_id`, `layer`, `capabilities`, `endpoints` |
-| Agent Card | `{repo}/main/.well-known/agent.json` | `name`, `skills`, `provider`, `federation.interfaces` |
-| Peer Identity | `{repo}/main/data/federation/peer.json` | `identity.city_id`, `identity.repo`, `endpoint.transport`, `capabilities`, `nadi` config |
-| README | `{repo}/main/README.md` | Human-readable identity, purpose, status notes |
+### Layer 1: Discovery & Identity (every node MUST have these)
 
-### Tier 2 — Available on Active Nodes (opt-in, but steward has it)
+| Surface | Path | What It Declares |
+|---------|------|-----------------|
+| Federation Descriptor | `.well-known/agent-federation.json` | `kind`, `status` (active/sleeping), `repo_id`, `layer`, `capabilities`, `endpoints` |
+| NADI Peer Identity | `data/federation/peer.json` | `identity.city_id`, `identity.repo`, `endpoint.transport`, `capabilities`, `nadi.outbox`/`inbox` paths |
 
-| Source | URL Pattern | What It Provides |
-|--------|-------------|-----------------|
-| Health Snapshot | `steward/main/data/federation/steward_health.json` | `peers.alive/suspect/dead/total`, `immune.*`, `gateway.*`, `cognition.*` |
-| Reaper Stats | `steward/main/.steward/peers.json` | `total_reaps`, `total_evictions`, `lease_ttl_s`, `trust_decay` |
-| Live Status | `steward/main/CLAUDE.md` | `Health score (sattva/rajas/tamas)`, `Federation: N peers`, task queue |
-| Pokedex | `agent-city/main/data/pokedex.json` | `total` agents, `census_date`, agent list with elements/zones |
+**Verification (2026-07-19):** 8/8 seed nodes expose the descriptor. 8/8 expose peer.json. These are the foundation.
 
-### Tier 3 — GitHub API (requires token, rate-limited)
+### Layer 2: Communication Activity (NADI transport)
 
-| Source | API Endpoint | What It Provides |
-|--------|-------------|-----------------|
-| Workflow Runs | `GET /repos/{owner}/{repo}/actions/workflows/{id}/runs` | Last heartbeat timestamp, success/failure, run duration |
-| Commit Activity | `GET /repos/{owner}/{repo}/commits` | Last commit date, commit frequency |
-| Issue Activity | `GET /repos/{owner}/{repo}/issues` | Open/closed issues, discussion activity |
+| Surface | Path | What It Shows |
+|---------|------|--------------|
+| NADI Outbox | `data/federation/nadi_outbox.json` | Pending `DeliveryEnvelope` messages. Count = communication activity. |
+| NADI Inbox | `data/federation/nadi_inbox.json` | Received messages from peers. |
 
-### Seed List (discovery bootstrap)
+**Verification:** agent-internet has 144 pending outbox messages right now. steward has 52. agent-city has 0. This IS the federation's pulse — no health.json needed.
 
-The authoritative seed list lives at:
-`hermes-sankhya-25/main/data/federation/authority-descriptor-seeds.json`
+### Layer 3: Verified Content (Authority Feed)
 
-Currently 8 seeds. The map script reads this first, then can optionally do GitHub topic search for `agent-federation-node` to discover new peers.
+| Surface | Path | What It Shows |
+|---------|------|--------------|
+| Authority Manifest | `authority-feed/latest-authority-manifest.json` | `kind` = `source_authority_feed_manifest`. Node publishes verifiable content. |
+
+**Verification:** 4/8 nodes publish an authority feed (agent-world, steward-protocol, agent-research, steward).
+
+### Layer 4: Peer Discovery (Federation-standard bootstrap)
+
+| Surface | Source | What It Shows |
+|---------|--------|--------------|
+| Seed List | `data/federation/authority-descriptor-seeds.json` | Bootstrap peers (currently 8) |
+| GitHub Topic Search | `agent-federation-node` topic | Dynamic discovery of new nodes |
+
+**This is the same mechanism `discover_federation_peers.py` uses.** federation-map reuses this pattern, not invents a new one.
+
+### What we deliberately do NOT read
+
+- `CLAUDE.md` — internal agent instructions, not a federation surface
+- `steward_health.json` — steward implementation detail
+- `pokedex.json` — agent-city implementation detail
+- Any path not declared in `.well-known/agent-federation.json` or `peer.json`
+
+These files contain valuable data. The proper way to get that data is for those nodes to publish it via their authority feed or respond to NADI queries. That's a protocol evolution, not a scraping shortcut.
 
 ---
 
@@ -76,194 +86,183 @@ Currently 8 seeds. The map script reads this first, then can optionally do GitHu
 ```
 federation-map/
 ├── .well-known/
-│   ├── agent-federation.json       ← Generated: this node's identity
-│   └── agent.json                  ← Generated: this node's agent card
+│   ├── agent-federation.json       ← This node's federation identity
+│   └── agent.json                  ← This node's agent card
 ├── data/
 │   └── federation/
-│       ├── peer.json               ← This node's peer identity
-│       ├── peers.json              ← Aggregate peer registry (from seeds + discovery)
-│       ├── topology.json           ← Computed topology data (nodes + edges)
-│       ├── health_snapshot.json    ← Latest health metrics from all reachable peers
-│       └── nadi_outbox.json        ← NADI transport (for federation communication)
+│       ├── peer.json               ← This node's NADI identity
+│       ├── peers.json              ← Discovered peer registry (from seeds + topic search)
+│       ├── topology.json           ← Computed topology: nodes + edges + status
+│       ├── nadi_outbox.json        ← NADI outbox (send topology updates)
+│       └── nadi_inbox.json         ← NADI inbox (receive heartbeats from peers)
 ├── scripts/
-│   └── render_topology.py          ← THE CORE: fetches data → computes → renders ASCII
+│   ├── discover_peers.py           ← Reuse federation discovery pattern (seeds + topic search)
+│   └── render_topology.py          ← THE CORE: reads peers.json → fetches surfaces → renders ASCII
 ├── docs/
 │   └── specs/
 │       └── federation-map-spec.md  ← This file
-├── README.md                       ← = topology.ascii (auto-generated, committed by heartbeat)
+├── README.md                       ← Contains the live ASCII map (auto-committed by heartbeat)
 └── .github/
     └── workflows/
-        └── federation-map.yml      ← Heartbeat: runs render_topology.py, commits result
+        └── federation-map.yml      ← Heartbeat: render → commit → push
 ```
 
 ---
 
 ## The Core Script: `scripts/render_topology.py`
 
-### Phase 1: Discover
+Python 3.11. Stdlib only (`urllib`, `json`, `hashlib`). Zero dependencies — same contract as every federation script.
+
+### Phase 1: Discover Peers
 
 ```
-1. Read seed list from hermes-sankhya-25 (or local copy)
-2. Fetch .well-known/agent-federation.json from each seed
-3. For each seed: fetch agent.json, peer.json (if available)
-4. Optionally: GitHub topic search "agent-federation-node" → merge with seeds
-5. Output: peers.json (deduplicated, enriched)
+Input:  data/federation/authority-descriptor-seeds.json (local copy, synced from hermes-sankhya-25)
+        Optional: GitHub topic search "agent-federation-node"
+
+Process:
+  1. Read seed URLs
+  2. Fetch .well-known/agent-federation.json from each seed
+  3. Validate: kind == "agent_federation_descriptor"
+  4. Extract: repo_id, status, layer, capabilities
+  5. Deduplicate by repo_id
+  6. Also fetch data/federation/peer.json from each (NADI identity)
+
+Output: data/federation/peers.json
+  [
+    {
+      "repo_id": "kimeisele/steward",
+      "city_id": "steward",
+      "status": "active",
+      "layer": "node",
+      "capabilities": ["code_analysis", "task_execution", ...],
+      "nadi_outbox": "data/federation/nadi_outbox.json",
+      "nadi_inbox": "data/federation/nadi_inbox.json",
+      "transport": "filesystem"
+    },
+    ...
+  ]
 ```
 
-### Phase 2: Health Check
+### Phase 2: Check Activity (NADI outbox)
 
 ```
-1. For each peer with a known data/federation path:
-   - Try to fetch health data (steward_health.json or equivalent)
-   - Try to fetch CLAUDE.md for the Status line
-2. For each peer via GitHub API (optional, if GITHUB_TOKEN set):
-   - Last workflow run timestamp → heartbeat freshness
-   - Last commit timestamp → activity level
-3. Output: health_snapshot.json
+For each peer with a known nadi_outbox path:
+  1. Fetch {repo}/main/{nadi_outbox_path}
+  2. Count pending DeliveryEnvelope messages
+  3. Record: nadi_pending_count, last_message_timestamp (if available)
+
+Node activity status derived from NADI:
+  - COMMUNICATING: nadi_pending > 0 in last cycle  → node is actively sending
+  - IDLE:         nadi_pending == 0                 → node is alive but quiet
+  - UNREACHABLE:  outbox fetch failed               → node may be down
 ```
 
-### Phase 3: Compute Topology
+### Phase 3: Check Authority Feed
 
 ```
-1. Nodes = unique peers from Phase 1 + Phase 2
-2. Edges = NADI connections deduced from:
-   - peer.json → nadi.outbox/inbox paths
-   - steward_health.json → gateway stats
-   - authority-descriptor-seeds.json → seed relationships
-3. Node status from health data:
-   - ACTIVE: heartbeat < 1h ago
-   - IDLE: heartbeat 1-24h ago
-   - STALE: heartbeat 1-7d ago
-   - FROZEN: heartbeat > 7d or no data
-   - UNKNOWN: never seen
-4. Node role from capabilities + layer:
-   - RELAY: has nadi-relay capability
-   - GOVERNANCE: has governance capability
-   - RESEARCH: has research_* capabilities
-   - EXECUTION: has code_analysis, task_execution, ci_automation
-   - OUTPOST: has authority-publishing, inquiry-response
-   - TEMPLATE: repo_id contains "template"
-   - PROTOCOL: layer = "internet" or has protocol capabilities
-5. Output: topology.json
+For each peer:
+  1. Try fetching authority-feed/latest-authority-manifest.json
+  2. If present and valid: node publishes verified content
+  3. Record: has_authority_feed, manifest_kind
 ```
 
-### Phase 4: Render ASCII Map
+### Phase 4: Compute Topology
 
-Deterministic layout. No randomness. Pure Python stdlib.
-
-The map MUST include:
-- **Header**: generation timestamp, total nodes, health summary
-- **Topology diagram**: ASCII-drawn graph with node boxes and connections
-- **Legend**: status symbols and what they mean
-- **Metrics panel**: key numbers (peers alive, NADI messages, immune status)
-- **Footer**: data freshness (when each source was last fetched)
-
-Node box format (scalable — same format for 8 or 80 nodes):
 ```
-┌──────────────────────┐
-│ steward              │
-│ SUPER AGENT          │
-│ ● ACTIVE             │
-│ HP: 5980 · ⬆23 NADI │
-│ Trust: 0.86 sattva   │
-└──────────────────────┘
-```
+Nodes:  all discovered peers from Phase 1
+Edges:  derived from seed list relationships (who links to whom)
+        + NADI communication pairs (who sent to whom, from envelope targets)
 
----
+Node classification from capabilities (declared, not guessed):
+  RELAY:       "nadi-relay" in capabilities
+  GOVERNANCE:  "governance" in capabilities  
+  RESEARCH:    "research_synthesis" in capabilities
+  EXECUTION:   "code_analysis" or "task_execution" in capabilities
+  OBSERVER:    "federation-visualization" in capabilities
+  PROTOCOL:    layer == "internet"
+  OUTPOST:     "authority-publishing" in capabilities
+  TEMPLATE:    "test-target" in capabilities or repo_id contains "template"
+  GENERIC:     none of the above match
 
-## The Output File: `topology.ascii`
+Status from declared + observed:
+  ACTIVE:       descriptor.status == "active" AND nadi_outbox reachable
+  DECLARED:     descriptor.status == "active" BUT nadi_outbox unreachable
+  SLEEPING:     descriptor.status != "active"
+  FROZEN:       no successful fetch in 7+ days (from peers.json history)
 
-This is THE artifact. It gets embedded in README.md between marker comments:
-
-```markdown
-# Federation Map
-
-<!-- federation-map:start -->
-[ASCII map content here — auto-generated, do not edit manually]
-<!-- federation-map:end -->
-
-## Data Freshness
-
-Last generated: 2026-07-19T14:33:00Z
-Sources fetched: 8/8 descriptors, 3/3 health files, 2/2 pokedex
-GitHub API: rate limit 4998/5000
+Output: data/federation/topology.json
 ```
 
----
+### Phase 5: Render ASCII Map
 
-## Scalability Design
+Deterministic. Pure Python string formatting. No randomness.
 
-The map MUST work for 8 nodes AND 80 nodes. Design decisions:
-
-1. **Grid layout, not force-directed.** For ≤12 nodes: single-row or 2-row layout. For >12: compact grid (4 columns, N rows). Predictable positions, no overlap.
-
-2. **Node detail is tiered.** At >20 nodes, box format compresses:
-   ```
-   ┌──────────────────────┐   →   │ steward ● HP:5980 │
-   │ steward              │
-   │ ● ACTIVE  HP: 5980   │
-   └──────────────────────┘
-   ```
-
-3. **Edges are only shown for active NADI traffic.** If no traffic data available, show seed-list relationships as dotted lines. If traffic > threshold (from gateway stats), show solid lines.
-
-4. **The JSON data files are the source of truth.** The ASCII map is a RENDERED VIEW. Any agent can read `topology.json` and `health_snapshot.json` without parsing ASCII art.
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                   AGENT FEDERATION — TOPOLOGY                     │
+│                   Generated: 2026-07-19 15:07 UTC                 │
+│                   Cycle: #1  ·  Protocol: NADI v1                 │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│   ┌────────────────┐                                              │
+│   │ agent-internet │──── NADI RELAY (144 pending) ────┐           │
+│   │ ● ACTIVE       │                                  │           │
+│   │ layer: internet│                                  │           │
+│   │ caps: 5        │                                  │           │
+│   └────────────────┘                                  │           │
+│            │                                          │           │
+│   ┌────────┼──────────┬──────────┬──────────┐        │           │
+│   │        │          │          │          │        │           │
+│   ▼        ▼          ▼          ▼          ▼        │           │
+│ ┌──────┐ ┌──────┐ ┌────────┐ ┌────────┐ ┌────────┐  │           │
+│ │stewrd│ │agent-│ │steward-│ │agent-  │ │hermes- │  │           │
+│ │      │ │city  │ │protocol│ │research│ │sankhya │  │           │
+│ │●ACTIV│ │⍟SLEEP│ │●ACTIVE │ │●ACTIVE │ │●ACTIVE │  │           │
+│ │52 NAD│ │0 NADI│ │0 NADI  │ │feed:✓  │ │caps:2  │  │           │
+│ └──────┘ └──────┘ └────────┘ └────────┘ └────────┘  │           │
+│                                                                   │
+├──────────────────────────────────────────────────────────────────┤
+│ LEGEND: ● active  ⍟ sleeping  ◇ template  ◎ unreachable         │
+│ NADI = pending outbox messages (communication activity)           │
+│ feed = authority feed published                                   │
+├──────────────────────────────────────────────────────────────────┤
+│ SUMMARY: 8 nodes · 2 communicating · 1 sleeping · 0 unreachable  │
+│ NADI flow: 197 pending messages across federation                 │
+│ Authority feeds: 4/8 nodes publishing verified content            │
+└──────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
 ## Heartbeat Configuration
 
+Offset from steward's heartbeat to avoid race conditions on NADI outbox reads:
+
 ```yaml
 # .github/workflows/federation-map.yml
-name: Federation Map Refresh
 on:
   schedule:
-    - cron: '7,22,37,52 * * * *'   # Every 15 min, offset from steward
-  workflow_dispatch:                # Manual trigger
-jobs:
-  render:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - run: python scripts/render_topology.py
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Optional, for API enrichment
-      - run: |
-          git config user.name "federation-map[bot]"
-          git config user.email "federation-map[bot]@users.noreply.github.com"
-          git add README.md data/
-          git diff --staged --quiet || git commit -m "chore: federation map refresh [skip ci]"
-          git push
+    - cron: '7,22,37,52 * * * *'   # Every 15 min, offset
+  workflow_dispatch:
 ```
 
 ---
 
-## Identity
-
-This node is itself a federation member:
+## Identity (this node)
 
 - **Name:** Federation Map
 - **Repo:** kimeisele/federation-map
-- **Tier:** Observer (new tier — passive, read-only, no mutations)
-- **Zone:** Akasha (Ether — the observation layer, the space between nodes)
+- **Tier:** Observer (passive, read-only, no mutations on other nodes)
+- **Zone:** Akasha (Ether — the observation layer)
 - **Layer:** visibility
 - **Capabilities:** `federation-visualization`, `topology-rendering`, `health-aggregation`
-- **Produces:** `topology_map`, `health_snapshot`, `peer_registry`
-- **Consumes:** `federation_descriptors`, `agent_cards`, `health_data`
+- **Produces:** `topology_map`, `peer_registry`
+- **Consumes:** `federation_descriptors`, `nadi_peer_identity`
+- **Protocols:** `nadi-filesystem`
 
-### Federation Interfaces
+### Why "Observer" is a valid tier
 
-```json
-{
-  "produces": ["topology_map", "health_snapshot", "peer_registry"],
-  "consumes": ["federation_descriptor", "agent_card", "health_data", "peer_identity"],
-  "protocols": ["nadi-filesystem", "https-raw"],
-  "transport": "github-raw-content + nadi-outbox"
-}
-```
+The federation already has RELAY (agent-internet), GOVERNANCE (agent-city), RESEARCH (agent-research), EXECUTION (steward). An OBSERVER that only reads and renders is a legitimate role — it's the visibility layer the federation currently lacks.
 
 ---
 
@@ -271,62 +270,64 @@ This node is itself a federation member:
 
 ### In Scope
 
-1. `scripts/render_topology.py` — Python 3.11, stdlib only (urllib + json)
-2. Fetches from seed list (8 nodes)
-3. Reads `.well-known/agent-federation.json` from each
-4. Reads steward's `steward_health.json` for live metrics
-5. Reads steward's `CLAUDE.md` for the Status line
-6. Reads agent-city's `pokedex.json` for population count
-7. Generates `topology.ascii` with all nodes
-8. Generates `topology.json` and `health_snapshot.json` in `data/`
-9. Embeds into `README.md`
-10. GitHub Actions heartbeat (every 15 min, offset from steward)
-11. `.well-known/` descriptor + agent card for this node
+1. `scripts/render_topology.py` — Phase 1-5, Python 3.11 stdlib only
+2. Discovery from seed list (8 nodes) — `.well-known/` + `peer.json`
+3. NADI outbox read from each peer → activity status
+4. Authority feed check → publishing status
+5. ASCII map rendered into `README.md`
+6. `topology.json` + `peers.json` written to `data/federation/`
+7. `.well-known/` descriptor + agent card for this node
+8. GitHub Actions heartbeat (15-min cycle)
+9. NADI inbox + outbox set up (receive heartbeats, send topology updates — Phase 2)
 
 ### Out of Scope (MVP)
 
-- GitHub API enrichment (workflow runs, commit timestamps)
-- GitHub topic search for dynamic peer discovery
-- NADI outbox sending (this node is read-only initially)
-- Historical trend data
-- Alerting or anomaly detection (steward does this already)
-- Multi-layout rendering (grid only for now)
-- Edge/connection rendering beyond seed-list relationships
+- NADI message sending (this node is read-only in MVP, becomes active in Phase 2)
+- GitHub topic search for dynamic peer discovery (use seed list only)
+- Historical trend data (peers.json history)
+- Reading any file not declared in the federation protocol surfaces
+- Alerting (steward's Reaper handles this)
 
 ---
 
-## Metrics That Matter (not bullshit)
+## Protocol Compliance
 
-Every number on the map must come from a real data source:
+federation-map is a conformant federation node because it:
 
-| Metric | Source | Why It Matters |
-|--------|--------|---------------|
-| Nodes total | seeds + discovery | Federation size |
-| Nodes alive | steward health peers.alive | Real reachability |
-| Heartbeat count | CLAUDE.md or .steward/health | Operational longevity |
-| NADI messages | steward health gateway.total_requests | Inter-node communication |
-| Immune heals | steward health immune.heals_attempted | Self-repair activity |
-| Total reaps/evictions | steward .steward/peers.json | Network GC health |
-| Agent population | agent-city pokedex.json total | Citizen count |
-| Census date | agent-city pokedex.json census_date | Data freshness |
-| Cognition calls | steward health cognition.total_calls | LLM usage (should be low) |
-| Health score | CLAUDE.md Status line | Overall node health |
+1. Exposes `.well-known/agent-federation.json` ✅
+2. Has `data/federation/peer.json` with NADI identity ✅
+3. Has `data/federation/nadi_outbox.json` + `nadi_inbox.json` ✅
+4. Can be discovered via seed list or topic search ✅
+5. Uses the same Python-stdlib-only contract ✅
+6. Follows the same heartbeat pattern (15-min GitHub Actions) ✅
+
+The only difference from other nodes: it's read-only in MVP. It observes. That's the point.
+
+---
+
+## Why This Approach Is Correct
+
+1. **Protocol surfaces are stable.** `.well-known/agent-federation.json` is the contract. `peer.json` is the contract. Internal files like `steward_health.json` can change or disappear — the protocol surfaces cannot.
+
+2. **NADI outbox count IS the health metric.** A node with 144 pending NADI messages is communicating actively. A node with 0 might be idle or sleeping. The outbox IS the pulse.
+
+3. **The map shows what the federation declares about itself.** Not what we infer from internals. If a node says it's "active" but has 0 NADI activity for 30 days — that's visible, not hidden. The discrepancy IS the information.
+
+4. **This scales.** Any new node that adds `.well-known/agent-federation.json` + `peer.json` automatically appears on the map. No configuration needed.
 
 ---
 
 ## Next Steps
 
-1. [ ] Spec review and approval
-2. [ ] Create repo `kimeisele/federation-map` on GitHub
-3. [ ] Implement `scripts/render_topology.py` (Phase 1: Discovery only)
-4. [ ] First ASCII map with real data from 8 seeds
-5. [ ] Add steward health metrics (Phase 2)
-6. [ ] Add agent-city pokedex data
-7. [ ] GitHub Actions heartbeat
-8. [ ] `.well-known/` descriptor + agent card
-9. [ ] Phase 3: NADI outbox (become an active federation member)
-10. [ ] Phase 4: GitHub API enrichment
+1. [ ] Spec review (Opus)
+2. [ ] Implement Phase 1: Discovery from seed list
+3. [ ] First ASCII map from real `.well-known/` + `peer.json` data
+4. [ ] Phase 2: NADI outbox activity check
+5. [ ] Phase 3: Authority feed check
+6. [ ] Phase 4: Render + commit heartbeat
+7. [ ] Phase 5: NADI inbox listener (become active member)
 
 ---
 
-*v0.1 — Initial spec, July 2026*
+*v0.1 — Initial spec, July 2026 (scraped internal files — wrong approach)*
+*v0.2 — Rewritten: federation protocol surfaces only. NADI outbox = pulse. No scraping.*
