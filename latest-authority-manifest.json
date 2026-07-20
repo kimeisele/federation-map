@@ -1,0 +1,30 @@
+{
+  "artifacts": {
+    ".authority-exports/canonical-surface.json": {
+      "path": "bundles/76686bf66c6eb5058fa9c3a5b00d6980aa04f719/.authority-exports/canonical-surface.json",
+      "sha256": "f900c1a54429e63b0bc9226cdddd9838025c35be8ed71f5a32fa00413521334b"
+    },
+    ".authority-exports/public-summary-registry.json": {
+      "path": "bundles/76686bf66c6eb5058fa9c3a5b00d6980aa04f719/.authority-exports/public-summary-registry.json",
+      "sha256": "d74ae3011b08264d8de9ae9373d60737bf0fd6d0ee8b2b7cb8dad3e7825cd00c"
+    },
+    ".authority-exports/source-surface-registry.json": {
+      "path": "bundles/76686bf66c6eb5058fa9c3a5b00d6980aa04f719/.authority-exports/source-surface-registry.json",
+      "sha256": "58597e54f5e07bddae7ec8e21712af1dc174722babd11df56875ca6a950faecd"
+    },
+    ".authority-exports/surface-metadata.json": {
+      "path": "bundles/76686bf66c6eb5058fa9c3a5b00d6980aa04f719/.authority-exports/surface-metadata.json",
+      "sha256": "9ecb28a29d58e269f58e6f75d5bfca0bf850944b2f689e454a6d6c237319778c"
+    }
+  },
+  "bundle": {
+    "kind": "source_authority_bundle",
+    "path": "bundles/76686bf66c6eb5058fa9c3a5b00d6980aa04f719/source-authority-bundle.json",
+    "sha256": "ad77ef827759c1aa3edf4d8c19a31024edad03ee78b51350771aa713dc319311"
+  },
+  "contract_version": 1,
+  "generated_at": 0.0,
+  "kind": "source_authority_feed_manifest",
+  "source_repo_id": "federation-map",
+  "source_sha": "76686bf66c6eb5058fa9c3a5b00d6980aa04f719"
+}
