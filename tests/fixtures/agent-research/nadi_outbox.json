@@ -9,8 +9,8 @@
       "question": "dark matter"
     },
     "priority": 3,
-    "source_city_id": "agent-research",
-    "target_city_id": "agent-internet",
+    "source": "agent-research",
+    "target": "agent-internet",
     "timestamp": 1752930000.0,
     "ttl_ms": 300000
   },
@@ -24,8 +24,8 @@
       "question": "dark matter"
     },
     "priority": 3,
-    "source_city_id": "agent-research",
-    "target_city_id": "agent-internet",
+    "source": "agent-research",
+    "target": "agent-internet",
     "timestamp": 1752930000.0,
     "ttl_ms": 300000
   },
@@ -39,8 +39,8 @@
       "question": "dark matter"
     },
     "priority": 3,
-    "source_city_id": "agent-research",
-    "target_city_id": "agent-internet",
+    "source": "agent-research",
+    "target": "agent-internet",
     "timestamp": 1752930000.0,
     "ttl_ms": 300000
   }
