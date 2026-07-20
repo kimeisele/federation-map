@@ -6,7 +6,7 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #1 · 2026-07-20T05:11:12Z│
+│  AGENT FEDERATION · TERRAIN           cycle #1 · 2026-07-20T05:41:11Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
 │  8 nodes · 5 communicating · 202 in flight · 5/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
@@ -25,19 +25,20 @@
 │    · steward-test           ·····     0    template                  │
 │────────────────────────────────────────────────────────────────────  │
 ├──────────────────────────────────────────────────────────────────────┤
-│  FEDERATION FLOWS · directed, from live NADI envelopes               │
-│    agent-internet       ──▶ steward                88  ████          │
-│    agent-internet       ──▶ agent-research         41  ██            │
-│    steward              ──▶ hermes-sankhya-25      15  █             │
-│    steward              ──▶ agent-city             12  █             │
-│    agent-internet       ──▶ agent-city             10  █             │
-│    steward              ──▶ agent-internet          9  █             │
-│    steward              ──▶ agent-research          8  █             │
-│    steward              ──▶ steward-federation      8  █             │
-│    agent-internet       ──▶ hermes-sankhya-25       5  █             │
-│    agent-research       ──▶ agent-internet          3  █             │
-│    hermes-sankhya-25    ──▶ agent-internet          2  █             │
-│    agent-world          ──▶ agent-internet          1  █             │
+│  FEDERATION FLOWS · tiered by volume · hub-and-spoke via relay       │
+│    agent-internet     ▓▓▓▓▓▓▓▓ steward              88 ⬡ [backbone]  │
+│    agent-internet     ═════    agent-research       41 ⬡             │
+│    steward            ══       hermes-sankhya-25    15               │
+│    steward            ══       agent-city           12               │
+│    agent-internet     ──       agent-city           10 ⬡             │
+│    steward            ─        agent-internet        9 ⬡             │
+│    steward            ─        agent-research        8               │
+│    steward            ─        steward-federation    8               │
+│    agent-internet     ─        hermes-sankhya-25     5 ⬡             │
+│    agent-research     ─        agent-internet        3 ⬡             │
+│    hermes-sankhya-25  ─        agent-internet        2 ⬡             │
+│    agent-world        ─        agent-internet        1 ⬡             │
+│    · faint ─ copper ═ fiber ▓ backbone ⬡ relay hub                   │
 │    silent: agent-city, steward-protocol, steward-test                │
 ├──────────────────────────────────────────────────────────────────────┤
 │  FEDERATION PULSE                                                    │
@@ -62,9 +63,10 @@
 │  ── SANDBOX                                                          │
 │                             ·                                        │
 │                                                                      │
-│  █  1 agent-internet    ·  2 agent-city    ░  3 agent-research       │
+│  █  1 agent-internet hub    ·  2 agent-city    ░  3 agent-research   │
 │  █  4 steward    ░  5 agent-world    ░  6 hermes-sankhya-…           │
 │  ·  7 steward-protocol    ·  8 steward-test                          │
+│  edge tiers: · faint ─ copper ═ fiber ▓ backbone                     │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 

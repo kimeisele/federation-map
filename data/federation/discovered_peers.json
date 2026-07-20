@@ -1,0 +1,50 @@
+{
+  "cached_at": 1784526058.7671978,
+  "peers": [
+    {
+      "discovery_method": "topic",
+      "node_name": "agent-research",
+      "repo_id": "agent-research"
+    },
+    {
+      "discovery_method": "topic",
+      "node_name": "hermes-sankhya-25",
+      "repo_id": "hermes-sankhya-25"
+    },
+    {
+      "discovery_method": "topic",
+      "node_name": "agent-city",
+      "repo_id": "kimeisele/agent-city"
+    },
+    {
+      "discovery_method": "topic",
+      "node_name": "agent-internet",
+      "repo_id": "kimeisele/agent-internet"
+    },
+    {
+      "discovery_method": "topic",
+      "node_name": "agent-world",
+      "repo_id": "kimeisele/agent-world"
+    },
+    {
+      "discovery_method": "topic",
+      "node_name": "steward",
+      "repo_id": "kimeisele/steward"
+    },
+    {
+      "discovery_method": "topic",
+      "node_name": "steward-federation",
+      "repo_id": "kimeisele/steward-federation"
+    },
+    {
+      "discovery_method": "topic",
+      "node_name": "steward-protocol",
+      "repo_id": "kimeisele/steward-protocol"
+    },
+    {
+      "discovery_method": "topic",
+      "node_name": "steward-test",
+      "repo_id": "kimeisele/steward-test"
+    }
+  ]
+}
