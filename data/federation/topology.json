@@ -1,21 +1,70 @@
 {
   "flows": {
-    "agent-internet>agent-city": 10,
-    "agent-internet>agent-research": 41,
-    "agent-internet>hermes-sankhya-25": 5,
-    "agent-internet>steward": 88,
-    "agent-research>agent-internet": 3,
-    "agent-world>agent-internet": 1,
-    "hermes-sankhya-25>agent-internet": 2,
-    "steward>agent-city": 12,
-    "steward>agent-internet": 9,
-    "steward>agent-research": 8,
-    "steward>hermes-sankhya-25": 15,
-    "steward>steward-federation": 8
+    "agent-internet>agent-city": {
+      "line": "\u2500",
+      "tier": "copper",
+      "volume": 10
+    },
+    "agent-internet>agent-research": {
+      "line": "\u2550",
+      "tier": "fiber",
+      "volume": 41
+    },
+    "agent-internet>hermes-sankhya-25": {
+      "line": "\u2500",
+      "tier": "copper",
+      "volume": 5
+    },
+    "agent-internet>steward": {
+      "line": "\u2593",
+      "tier": "backbone",
+      "volume": 88
+    },
+    "agent-research>agent-internet": {
+      "line": "\u2500",
+      "tier": "copper",
+      "volume": 3
+    },
+    "agent-world>agent-internet": {
+      "line": "\u2500",
+      "tier": "copper",
+      "volume": 1
+    },
+    "hermes-sankhya-25>agent-internet": {
+      "line": "\u2500",
+      "tier": "copper",
+      "volume": 2
+    },
+    "steward>agent-city": {
+      "line": "\u2550",
+      "tier": "fiber",
+      "volume": 12
+    },
+    "steward>agent-internet": {
+      "line": "\u2500",
+      "tier": "copper",
+      "volume": 9
+    },
+    "steward>agent-research": {
+      "line": "\u2500",
+      "tier": "copper",
+      "volume": 8
+    },
+    "steward>hermes-sankhya-25": {
+      "line": "\u2550",
+      "tier": "fiber",
+      "volume": 15
+    },
+    "steward>steward-federation": {
+      "line": "\u2500",
+      "tier": "copper",
+      "volume": 8
+    }
   },
-  "generated_at": "2026-07-20T05:11:12Z",
+  "generated_at": "2026-07-20T05:41:11Z",
   "nodes": {
     "agent-city": {
+      "backbone": false,
       "capabilities": [
         "code_execution",
         "economy",
@@ -33,9 +82,11 @@
       "outbox_reachable": true,
       "repo_id": "kimeisele/agent-city",
       "role": "GOVERNANCE",
-      "status": "ACTIVE"
+      "status": "ACTIVE",
+      "transport": "filesystem"
     },
     "agent-internet": {
+      "backbone": true,
       "capabilities": [
         "authority-projection",
         "federation-discovery",
@@ -60,9 +111,11 @@
       "outbox_reachable": true,
       "repo_id": "kimeisele/agent-internet",
       "role": "RELAY",
-      "status": "ACTIVE"
+      "status": "ACTIVE",
+      "transport": "filesystem"
     },
     "agent-research": {
+      "backbone": false,
       "capabilities": [
         "cross_domain_analysis",
         "meta_analysis",
@@ -84,9 +137,11 @@
       "outbox_reachable": true,
       "repo_id": "agent-research",
       "role": "RESEARCH",
-      "status": "ACTIVE"
+      "status": "ACTIVE",
+      "transport": "filesystem"
     },
     "agent-world": {
+      "backbone": false,
       "capabilities": [
         "authority-publishing",
         "inquiry-response",
@@ -107,9 +162,11 @@
       "outbox_reachable": true,
       "repo_id": "kimeisele/agent-world",
       "role": "OUTPOST",
-      "status": "ACTIVE"
+      "status": "ACTIVE",
+      "transport": "filesystem"
     },
     "hermes-sankhya-25": {
+      "backbone": false,
       "capabilities": [
         "authority-publishing",
         "inquiry-response"
@@ -128,9 +185,11 @@
       "outbox_reachable": true,
       "repo_id": "hermes-sankhya-25",
       "role": "OUTPOST",
-      "status": "ACTIVE"
+      "status": "ACTIVE",
+      "transport": "filesystem"
     },
     "steward": {
+      "backbone": false,
       "capabilities": [
         "autonomous_daemon",
         "ci_automation",
@@ -156,9 +215,11 @@
       "outbox_reachable": true,
       "repo_id": "kimeisele/steward",
       "role": "EXECUTION",
-      "status": "ACTIVE"
+      "status": "ACTIVE",
+      "transport": "filesystem"
     },
     "steward-protocol": {
+      "backbone": false,
       "capabilities": [
         "authority-publishing",
         "canonical-surface",
@@ -175,9 +236,11 @@
       "outbox_reachable": true,
       "repo_id": "kimeisele/steward-protocol",
       "role": "OUTPOST",
-      "status": "ACTIVE"
+      "status": "ACTIVE",
+      "transport": "filesystem"
     },
     "steward-test": {
+      "backbone": false,
       "capabilities": [
         "healing-sandbox",
         "test-execution",
@@ -193,7 +256,8 @@
       "outbox_reachable": true,
       "repo_id": "kimeisele/steward-test",
       "role": "TEMPLATE",
-      "status": "ACTIVE"
+      "status": "ACTIVE",
+      "transport": "filesystem"
     }
   },
   "summary": {

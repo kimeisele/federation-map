@@ -91,18 +91,112 @@ class FixturesLoader:
 
 # ── Phase 1: Discovery ──────────────────────────────────────────────
 
+# Per docs/federation-protocol-notes.md §2:
+# GitHub topic "agent-federation-node" IS the official discovery mechanism.
+# Seed list is a bootstrap cache, not the authority — fill gaps only.
+_TOPIC = "agent-federation-node"
+_SEARCH_API = "https://api.github.com/search/repositories"
+_SEARCH_PER_PAGE = 100
+_SELF_REPO = "kimeisele/federation-map"
+_PEER_CACHE_PATH = DATA_DIR / "discovered_peers.json"
+_CACHE_TTL_S = 900  # 15 minutes — matches relay pump cycle
+
 
 def _repo_id_to_node_name(repo_id: str) -> str:
     return repo_id.split("/")[-1]
 
 
-def _node_base_url(repo_id: str) -> str:
-    return f"https://raw.githubusercontent.com/{repo_id}/main"
+def _node_base_url(repo_id: str, default_branch: str = "main") -> str:
+    return f"https://raw.githubusercontent.com/{repo_id}/{default_branch}"
 
 
-def _discover_live(seed_urls: list[str]) -> list[dict]:
+def _fetch_json_with_headers(url: str, headers: dict) -> dict | list | None:
+    """Fetch JSON with custom headers. Returns None on any failure."""
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=HTTP_TIMEOUT) as resp:
+            return json.loads(resp.read())
+    except Exception:
+        return None
+
+
+def _discover_topic() -> list[dict]:
+    """Discover peers via GitHub topic search — the OFFICIAL mechanism.
+
+    Per docs/federation-protocol-notes.md §2.1:
+    agent-internet/docs/FEDERATION_DESCRIPTOR_V1.md:54-56 defines this as
+    the zero-touch discovery path. The relay pump uses the same mechanism
+    (federation_relay_pump.py:41-63).
+
+    Returns peers from repos tagged 'agent-federation-node'.
+    Graceful: on any failure, returns empty list — caller falls back to seeds.
+    """
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or ""
+    headers = {"User-Agent": _USER_AGENT, "Accept": "application/vnd.github+json"}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+
+    query = f"topic:{_TOPIC}"
+    all_items: list[dict] = []
+    page = 1
+
+    while True:
+        url = f"{_SEARCH_API}?q={query}&per_page={_SEARCH_PER_PAGE}&page={page}"
+        data = _fetch_json_with_headers(url, headers)
+        if not isinstance(data, dict):
+            break
+        items = data.get("items")
+        if not isinstance(items, list):
+            break
+        all_items.extend(items)
+        if len(all_items) >= int(data.get("total_count", 0)):
+            break
+        if len(items) < _SEARCH_PER_PAGE:
+            break
+        page += 1
+
+    if not all_items:
+        return []
+
     peers: list[dict] = []
-    seen: set[str] = set()
+    for repo in all_items:
+        full_name = str(repo.get("full_name", ""))
+        if not full_name or full_name.lower() == _SELF_REPO:
+            continue
+        default_branch = str(repo.get("default_branch", "main"))
+        base = _node_base_url(full_name, default_branch)
+
+        desc_url = f"{base}/.well-known/agent-federation.json"
+        descriptor = _fetch_json(desc_url)
+        if not descriptor or not isinstance(descriptor, dict):
+            continue
+        if descriptor.get("kind") != "agent_federation_descriptor":
+            continue
+
+        repo_id = str(descriptor.get("repo_id", full_name))
+        node_name = _repo_id_to_node_name(repo_id)
+
+        peer_url = f"{base}/data/federation/peer.json"
+        peer_data = _fetch_json(peer_url)
+        peer = peer_data if isinstance(peer_data, dict) else None
+
+        peers.append({
+            "node_name": node_name, "repo_id": repo_id,
+            "descriptor": descriptor, "peer": peer, "base_url": base,
+            "discovery_method": "topic", "default_branch": default_branch,
+        })
+
+    return peers
+
+
+def _discover_from_seeds(seed_urls: list[str]) -> list[dict]:
+    """Bootstrap fallback: discover peers from seed descriptor URLs.
+
+    Per docs/federation-protocol-notes.md §2.2:
+    The seed list is a bootstrap cache — not the authoritative registry.
+    Used only to fill gaps when topic search is unavailable.
+    """
+    peers: list[dict] = []
     for url in seed_urls:
         descriptor = _fetch_json(url)
         if not descriptor or not isinstance(descriptor, dict):
@@ -110,18 +204,91 @@ def _discover_live(seed_urls: list[str]) -> list[dict]:
         if descriptor.get("kind") != "agent_federation_descriptor":
             continue
         repo_id = str(descriptor.get("repo_id", ""))
-        if not repo_id or repo_id in seen:
+        if not repo_id:
             continue
-        seen.add(repo_id)
         node_name = _repo_id_to_node_name(repo_id)
-        base = _node_base_url(repo_id)
+        base = _node_base_url(repo_id, "main")
         peer_url = f"{base}/data/federation/peer.json"
         peer_data = _fetch_json(peer_url)
         peer = peer_data if isinstance(peer_data, dict) else None
         peers.append({
             "node_name": node_name, "repo_id": repo_id,
             "descriptor": descriptor, "peer": peer, "base_url": base,
+            "discovery_method": "seed",
         })
+    return peers
+
+
+def _load_peer_cache() -> list[dict] | None:
+    """Load cached discovered peers if fresh enough (15 min TTL)."""
+    if not _PEER_CACHE_PATH.exists():
+        return None
+    try:
+        data = json.loads(_PEER_CACHE_PATH.read_text())
+        if time.time() - data.get("cached_at", 0) > _CACHE_TTL_S:
+            return None
+        return data.get("peers", [])
+    except (json.JSONDecodeError, OSError):
+        return None
+
+
+def _save_peer_cache(peers: list[dict]) -> None:
+    """Cache discovered peer metadata to avoid hitting the API every cycle."""
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    cache = {
+        "cached_at": time.time(),
+        "peers": [
+            {"node_name": p["node_name"], "repo_id": p["repo_id"],
+             "discovery_method": p.get("discovery_method", "seed")}
+            for p in peers
+        ],
+    }
+    _PEER_CACHE_PATH.write_text(json.dumps(cache, indent=2, sort_keys=True) + "\n")
+
+
+def _discover_live(seed_urls: list[str]) -> list[dict]:
+    """Discover peers: topic search PRIMARY, seeds as bootstrap fallback.
+
+    Per docs/federation-protocol-notes.md §2:
+    Topic search is the official discovery mechanism. Seeds fill gaps.
+    Deterministic order: sorted by lowercased repo_id.
+    """
+    peers: list[dict] = []
+    seen: set[str] = set()
+
+    # ── Primary: try cache first ────────────────────────────────────
+    cached = _load_peer_cache()
+    if cached is not None:
+        return cached  # fresh cache — skip API calls entirely
+
+    # ── Primary: GitHub topic search ────────────────────────────────
+    try:
+        topic_peers = _discover_topic()
+    except Exception as e:
+        print(f"Topic discovery failed (continuing with seeds): {e}",
+              file=sys.stderr)
+        topic_peers = []
+
+    for p in topic_peers:
+        repo_lower = p["repo_id"].lower()
+        if repo_lower not in seen:
+            seen.add(repo_lower)
+            peers.append(p)
+
+    # ── Fallback: seed list fills gaps ─────────────────────────────
+    seed_peers = _discover_from_seeds(seed_urls)
+    for p in seed_peers:
+        repo_lower = p["repo_id"].lower()
+        if repo_lower not in seen:
+            seen.add(repo_lower)
+            peers.append(p)
+
+    # Deterministic order
+    peers.sort(key=lambda p: p["repo_id"].lower())
+
+    # Cache for next cycle
+    _save_peer_cache(peers)
+
     return peers
 
 
@@ -143,6 +310,7 @@ def _discover_fixtures(fixtures: FixturesLoader) -> list[dict]:
         peers.append({
             "node_name": node_name, "repo_id": repo_id,
             "descriptor": descriptor_raw, "peer": peer, "base_url": "",
+            "discovery_method": "fixtures", "default_branch": "main",
         })
     return peers
 
@@ -265,6 +433,50 @@ def _activity_glyph(depth: int, outbox_reachable: bool) -> str:
     return _ACTIVITY_GLYPHS[_depth_bin(depth)]
 
 
+# ── Edge tiers: from real NADI signals ───────────────────────────────
+# Per docs/federation-protocol-notes.md §4:
+# Traffic volume + transport type + backbone role = edge classification.
+
+# Traffic → edge tier
+_EDGE_TIERS = [
+    (0, "·", "faint"),       # 0 messages
+    (1, "─", "copper"),      # 1-10
+    (11, "═", "fiber"),      # 11-50
+    (51, "▓", "backbone"),   # 51+
+]
+
+# Transport type → proximity label
+_TRANSPORT_LABEL: dict[str, str] = {
+    "filesystem": "local",
+    "https": "remote",
+}
+
+
+def _edge_style(volume: int, transport: str = "") -> tuple[str, str]:
+    """Return (line_char, tier_name) for a given traffic volume.
+
+    Per docs/federation-protocol-notes.md §6.3:
+    Higher volume + filesystem = heavier visual link.
+    """
+    char = "·"
+    name = "faint"
+    for threshold, glyph, tier in _EDGE_TIERS:
+        if volume >= threshold:
+            char = glyph
+            name = tier
+    return char, name
+
+
+def _is_backbone(descriptor: dict) -> bool:
+    """Check if a node is the relay backbone (has nadi-relay capability).
+
+    Per docs/federation-protocol-notes.md §4.4:
+    agent-internet owns routing — nodes with nadi-relay are structurally different.
+    """
+    caps = [c.lower() for c in descriptor.get("capabilities", [])]
+    return "nadi-relay" in caps
+
+
 def _compute_topology(
     peers: list[dict],
     outbox_data: dict[str, tuple[int, dict[str, int], set[str]]],
@@ -292,14 +504,33 @@ def _compute_topology(
         merged_descriptor = dict(p["descriptor"])
         merged_descriptor["capabilities"] = merged_caps
 
+        # Transport type from peer.json (docs/federation-protocol-notes.md §4.2)
+        transport = str(
+            p.get("peer", {}).get("endpoint", {}).get("transport", "")
+        ).lower() if p["peer"] else ""
+        if not transport:
+            transport = "https"  # assume remote if not declared
+
+        backbone = _is_backbone(merged_descriptor)
+
         status = _determine_status(p["descriptor"], outbox_reachable)
         role = _classify_role(merged_descriptor)
         layer = str(p["descriptor"].get("layer", "node")).lower()
         has_feed = authority_data.get(node_name, False)
 
+        # Build typed edges: volume + tier per source→target pair
         for target, count in targets.items():
             key = f"{node_name}>{target}"
-            all_flows[key] = all_flows.get(key, 0) + count
+            existing = all_flows.get(key, {"volume": 0})
+            if isinstance(existing, dict):
+                existing["volume"] = existing.get("volume", 0) + count
+            else:
+                # Upgrade from legacy int format
+                existing = {"volume": existing + count}
+            line_char, tier_name = _edge_style(existing["volume"], transport)
+            existing["line"] = line_char
+            existing["tier"] = tier_name
+            all_flows[key] = existing
 
         nodes[node_name] = {
             "node_name": node_name,
@@ -312,6 +543,8 @@ def _compute_topology(
             "flow_targets": targets,
             "flow_sources": list(sources),
             "capabilities": merged_caps,
+            "transport": transport,
+            "backbone": backbone,
         }
 
     # Communicating = outbox reachable AND queue depth > 0
@@ -492,13 +725,19 @@ def _render_terrain(topology: dict, history: list[dict]) -> str:
 
 def _render_flows(topology: dict) -> str:
     flows = topology.get("flows", {})
+    nodes = topology["nodes"]
     if not flows:
         return _pad("  (no flow data — envelopes may lack target_city_id)") + "\n"
 
-    ranked = sorted(flows.items(), key=lambda x: -x[1])
+    # Sort by volume desc; handle both dict and legacy int formats
+    def _flow_volume(item: tuple) -> int:
+        v = item[1]
+        return v["volume"] if isinstance(v, dict) else v
+
+    ranked = sorted(flows.items(), key=_flow_volume, reverse=True)
     top_n = ranked[:12]
     silent = {
-        n["node_name"] for n in topology["nodes"].values()
+        n["node_name"] for n in nodes.values()
         if n["outbox_reachable"] and n["depth"] == 0
     }
     silent.update(
@@ -509,20 +748,33 @@ def _render_flows(topology: dict) -> str:
     silent = silent - speaking
 
     lines: list[str] = []
-    lines.append(_pad("  FEDERATION FLOWS · directed, from live NADI envelopes"))
+    # Hub-and-spoke: identify backbone nodes
+    hubs = {n["node_name"] for n in nodes.values() if n.get("backbone")}
+    lines.append(_pad("  FEDERATION FLOWS · tiered by volume · hub-and-spoke via relay"))
 
     if not top_n:
         lines.append(_pad("    (all nodes silent this cycle)"))
     else:
-        max_count = top_n[0][1]
-        for flow_key, count in top_n:
+        legend_shown = False
+        for flow_key, flow_data in top_n:
             source, target = flow_key.split(">", 1)
-            src = _fit(source, 20)
-            tgt = _fit(target, 20)
-            bar_len = max(1, round(count / max_count * 4))
-            bar = "█" * bar_len
-            row = f"    {src:<20} ──▶ {tgt:<20} {count:>4}  {bar}"
+            volume = flow_data["volume"] if isinstance(flow_data, dict) else flow_data
+            line_char = flow_data["line"] if isinstance(flow_data, dict) else "─"
+            tier = flow_data["tier"] if isinstance(flow_data, dict) else ""
+            src = _fit(source, 18)
+            tgt = _fit(target, 18)
+            # Draw the edge with the tiered line character
+            edge = line_char * max(1, min(8, volume // 10 + 1))
+            # Mark backbone links
+            backbone_marker = " ⬡" if (source in hubs or target in hubs) else ""
+            tier_label = f" [{tier}]" if tier and not legend_shown else ""
+            row = f"    {src:<18} {edge:<8} {tgt:<18} {volume:>4}{backbone_marker}{tier_label}"
             lines.append(_pad(row))
+            if tier_label:
+                legend_shown = True
+
+    # Legende
+    lines.append(_pad("    · faint ─ copper ═ fiber ▓ backbone ⬡ relay hub"))
 
     if silent:
         silent_str = ", ".join(sorted(silent))
@@ -795,18 +1047,25 @@ def _render_terra_map(topology: dict, _history: list[dict]) -> str:
     for _, _, node, num in sorted(placements, key=lambda p: p[3]):
         glyph = _activity_glyph(node["depth"], node["outbox_reachable"])
         name = _fit(node["node_name"], 16)
-        flag = ""
+        flags = []
+        if node.get("backbone"):
+            flags.append("hub")
         if node["status"] == "SLEEPING":
-            flag = " zzz"
+            flags.append("zzz")
         elif node["status"] == "UNREACHABLE":
-            flag = " !"
-        legend_parts.append(f"  {glyph} {num:>2} {name}{flag}")
+            flags.append("!")
+        flag_str = " " + " ".join(flags) if flags else ""
+        vol = node.get("depth", 0)
+        legend_parts.append(f"  {glyph} {num:>2} {name}{flag_str}")
 
     items_per_row = 3
     for i in range(0, len(legend_parts), items_per_row):
         row_parts = legend_parts[i : i + items_per_row]
         row = "  ".join(row_parts)
         lines.append(_pad(row))
+
+    # Edge tier legend below node legend
+    lines.append(_pad("  edge tiers: · faint ─ copper ═ fiber ▓ backbone"))
 
     return "\n".join(lines)
 
@@ -886,6 +1145,10 @@ def main() -> int:
         "--fixtures", type=Path, default=None,
         help="Load peer surfaces from a local fixtures directory (offline mode)",
     )
+    parser.add_argument(
+        "--discover-dry-run", action="store_true",
+        help="Only run discovery and print peers, then exit (no render)",
+    )
     args = parser.parse_args()
 
     fixtures: FixturesLoader | None = None
@@ -904,6 +1167,18 @@ def main() -> int:
     if not peers:
         print("No peers discovered.", file=sys.stderr)
         return 1
+
+    # Dry-run mode: print discovered peers and exit
+    if args.discover_dry_run:
+        for p in peers:
+            method = p.get("discovery_method", "fixtures" if fixtures else "seed")
+            backbone = " [hub]" if _is_backbone(
+                dict(p["descriptor"], **(p.get("peer") or {}))
+            ) else ""
+            transport = p.get("peer", {}).get("endpoint", {}).get("transport", "?") if p.get("peer") else "?"
+            print(f"  {p['repo_id']:<40} ({method}) {transport}{backbone}")
+        print(f"\nTotal: {len(peers)} peer(s)")
+        return 0
 
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     peers_json = [
