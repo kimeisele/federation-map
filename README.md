@@ -6,21 +6,21 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #7 · 2026-07-19T23:32:01Z│
+│  AGENT FEDERATION · TERRAIN           cycle #8 · 2026-07-20T01:07:02Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
-│  8 nodes · 3 communicating · 201 in flight · 0/8 feeds               │
+│  8 nodes · 2 communicating · 145 in flight · 0/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
 │  INTERNET · relay/transport                                          │
 │    █ agent-internet         ▁▁▁▁▁   144                              │
 │────────────────────────────────────────────────────────────────────  │
 │  NODE · execution/citizens                                           │
-│    █ steward                ▇▁▇▃█    56 ↑                            │
-│    ░ steward-test           ▁████     1    template                  │
+│    ░ steward-test           █████     1    template                  │
 │    · agent-city             ▁▁▁▁▁     0    silent                    │
-│    · agent-world            █▁▁▁▁     0    silent                    │
+│    · agent-world            ▁▁▁▁▁     0    silent                    │
 │    · steward-protocol       ▁▁▁▁▁     0    silent                    │
-│    ─ steward-federation     ▁▁▁▁     —    unreachable                │
-│    ─ agent-research         █▁▁▁▁     —    unreachable               │
+│    · steward                ▁▇▃█▁     0 ↓  silent                    │
+│    ─ steward-federation     ▁▁▁▁▁     —    unreachable               │
+│    ─ agent-research         ▁▁▁▁▁     —    unreachable               │
 │────────────────────────────────────────────────────────────────────  │
 ├──────────────────────────────────────────────────────────────────────┤
 │  (no flow data — envelopes may lack target_city_id)                  │
@@ -28,12 +28,12 @@
 ├──────────────────────────────────────────────────────────────────────┤
 │  FEDERATION PULSE                                                    │
 │    nodes         8   ▁▁▁▁▁  steady                                   │
-│    comming       3   ▂▁▁▁▁                                           │
-│    in flight   201   ▂▁▂▁▂  ↑  +43                                   │
+│    comming       2   ▁▁▁▁▁  ↓                                        │
+│    in flight   145   ▁▂▁▂▁  ↓  -56                                   │
 │    feeds       0/8   ▁▁▁▁▁  steady                                   │
 │    busiest     agent-internet · 144 pending                          │
 │    quietest    agent-city · 0 msgs                                   │
-│    ⚠ agent-internet backlog rising 6 cycles                          │
+│    ⚠ agent-internet backlog rising 7 cycles                          │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
