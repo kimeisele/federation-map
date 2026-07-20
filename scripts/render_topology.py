@@ -624,7 +624,7 @@ def _render_full(topology: dict, history: list[dict], cycle: int) -> str:
 _CANVAS_W = 54
 _CANVAS_H = 16
 
-# Territory → visual label (kept short — labels are left-edge watermarks)
+# Territory → visual label (kept short — territory header)
 _BIOME_LABELS: dict[str, str] = {
     "RELAY": "RELAY",
     "GOVERNANCE": "GOVERN",
@@ -637,18 +637,8 @@ _BIOME_LABELS: dict[str, str] = {
     "GENERIC": "OPEN",
 }
 
-# Territory → biome texture glyph
-_BIOME_TEXTURE: dict[str, str] = {
-    "RELAY": "~",
-    "GOVERNANCE": "▲",
-    "RESEARCH": "≈",
-    "EXECUTION": "▓",
-    "OUTPOST": "·",
-    "OBSERVER": "·",
-    "PROTOCOL": "▬",
-    "TEMPLATE": "◇",
-    "GENERIC": " ",
-}
+# Territory border glyph — placed between territories only, never as fill
+_BORDER_GLYPH = "·"
 
 
 def _jaccard_distance(a: set[str], b: set[str]) -> float:
@@ -675,7 +665,6 @@ def _render_terra_map(topology: dict, _history: list[dict]) -> str:
     for n in node_list:
         territories.setdefault(n["role"], []).append(n)
 
-    # Sort territories: known first by predefined order, then unknown alphabetically
     _ROLE_ORDER = {r: i for i, r in enumerate(_BIOME_LABELS.keys())}
     sorted_roles = sorted(
         territories.keys(),
@@ -683,16 +672,19 @@ def _render_terra_map(topology: dict, _history: list[dict]) -> str:
     )
 
     # ── 2. Within each territory: order by capability similarity ────
-    # Compute capability sets once
+    # Greedy chain: cumulative Jaccard distance → real spatial separation
     cap_sets: dict[str, set[str]] = {}
     for n in node_list:
         cap_sets[n["node_name"]] = {c.lower() for c in n.get("capabilities", [])}
 
+    # Per-territory: ordered list + cumulative distances
+    territory_layout: dict[str, list[tuple[dict, float]]] = {}
     for role in sorted_roles:
-        t_nodes = territories[role]
+        t_nodes = list(territories[role])
         if len(t_nodes) <= 1:
+            territory_layout[role] = [(t_nodes[0], 0.0)] if t_nodes else []
             continue
-        # Greedy chain: start with alphabetically first, place nearest each step
+        # Greedy chain
         ordered = [t_nodes[0]]
         remaining = t_nodes[1:]
         while remaining:
@@ -703,97 +695,113 @@ def _render_terra_map(topology: dict, _history: list[dict]) -> str:
                 )
             )
             ordered.append(remaining.pop(0))
-        territories[role] = ordered
+        # Cumulative distances along the chain
+        pairs: list[tuple[dict, float]] = [(ordered[0], 0.0)]
+        cum = 0.0
+        for i in range(1, len(ordered)):
+            d = _jaccard_distance(
+                cap_sets[ordered[i - 1]["node_name"]],
+                cap_sets[ordered[i]["node_name"]],
+            )
+            cum += max(d, 0.01)  # floor so identical-cap nodes still separate
+            pairs.append((ordered[i], cum))
+        territory_layout[role] = pairs
 
     # ── 3. Assign Y bands to territories ─────────────────────────────
-    # Distribute territory rows across canvas height
     n_territories = len(sorted_roles)
-    if n_territories <= 1:
-        # Single territory: center it
-        band_rows = {sorted_roles[0]: (_CANVAS_H // 2 - 1, _CANVAS_H // 2 + 1)}
-    else:
-        rows_per = max(1, _CANVAS_H // n_territories)
-        band_rows = {}
-        y = 1  # top margin
-        for role in sorted_roles:
-            band_rows[role] = (y, min(y + rows_per - 1, _CANVAS_H - 2))
-            y = min(y + rows_per, _CANVAS_H - 1)
+    # Fit within canvas: each territory gets at least 1 row, with a gap between
+    total_slots = _CANVAS_H - 1  # top margin
+    gap_rows = n_territories - 1
+    rows_per = max(1, (total_slots - gap_rows) // n_territories)
+    band_rows: dict[str, tuple[int, int]] = {}
+    y = 1
+    for role in sorted_roles:
+        band_rows[role] = (y, min(y + rows_per - 1, _CANVAS_H - 2))
+        y = min(y + rows_per + 1, _CANVAS_H - 1)  # +1 for separator
 
     # ── 4. Place nodes on canvas ─────────────────────────────────────
-    # Canvas: list of lists, (y, x) → glyph
     canvas = [[" " for _ in range(_CANVAS_W)] for _ in range(_CANVAS_H)]
 
-    # Apply biome background texture (faint, every 4th cell)
-    for role in sorted_roles:
-        texture = _BIOME_TEXTURE.get(role, " ")
-        y0, y1 = band_rows[role]
-        for y in range(y0, y1 + 1):
-            for x in range(_CANVAS_W):
-                if texture != " " and (x + y) % 5 == 0:
-                    canvas[y][x] = texture
+    # Territory border rows (thin coastline between territories)
+    for idx in range(len(sorted_roles) - 1):
+        role = sorted_roles[idx]
+        _, y1 = band_rows[role]
+        sep_y = y1 + 1
+        if sep_y < _CANVAS_H:
+            for x in range(0, _CANVAS_W, 3):
+                canvas[sep_y][x] = _BORDER_GLYPH
 
-    # Place node markers
-    placements: list[tuple[int, int, dict, int]] = []  # (y, x, node, index)
+    placements: list[tuple[int, int, dict, int]] = []
+
     for role in sorted_roles:
-        t_nodes = territories[role]
+        layout = territory_layout.get(role, [])
+        if not layout:
+            continue
         y0, y1 = band_rows[role]
         mid_y = (y0 + y1) // 2
-        n = len(t_nodes)
-        if n == 0:
-            continue
-        margin = 2
-        usable_w = _CANVAS_W - 2 * margin
-        step = usable_w / max(n, 1)
-        for i, node in enumerate(t_nodes):
-            x = margin + int(step * i + step / 2)
-            # Collision resolution
-            orig_x = x
-            offset = 0
-            while (canvas[mid_y][x] not in (" ", _BIOME_TEXTURE.get(role, " "))
-                   and offset < _CANVAS_W):
-                offset += 1
-                x = (orig_x + offset) % _CANVAS_W
-            placements.append((mid_y, x, node, len(placements) + 1))
+        n = len(layout)
+
+        # Scale cumulative distances to canvas width
+        max_dist = layout[-1][1] if layout else 0.0
+        if max_dist <= 0.0:
+            # Single node or all identical → center in territory
+            margin = 2
+            usable = _CANVAS_W - 2 * margin
+            if n == 1:
+                x = margin + usable // 2
+                placements.append((mid_y, x, layout[0][0], len(placements) + 1))
+            else:
+                step = usable / max(n - 1, 1)
+                for i, (node, _) in enumerate(layout):
+                    x = margin + int(step * i)
+                    placements.append((mid_y, x, node, len(placements) + 1))
+        else:
+            margin = 2
+            usable = _CANVAS_W - 2 * margin
+            for node, cum_dist in layout:
+                frac = cum_dist / max_dist
+                x = margin + int(frac * usable)
+                # Deterministic vertical jitter: hash node name for offset
+                seed = sum(ord(c) for c in node["node_name"])
+                jitter_y = mid_y + (seed % 3) - 1  # -1, 0, or +1
+                jitter_y = max(y0, min(y1, jitter_y))
+                # If occupied, use mid_y
+                if canvas[jitter_y][x] != " ":
+                    jitter_y = mid_y
+                # Final clamp
+                jitter_y = max(y0, min(y1, jitter_y))
+                placements.append((jitter_y, x, node, len(placements) + 1))
 
     # ── 5. Apply weather glyphs ──────────────────────────────────────
-    for y, x, node, num in placements:
+    for y, x, node, _ in placements:
         glyph = _activity_glyph(node["depth"], node["outbox_reachable"])
         canvas[y][x] = glyph
 
-    # ── 6. Build output: territory header → grid rows ────────────────
+    # ── 6. Build output ──────────────────────────────────────────────
     lines: list[str] = []
     lines.append(_pad("  TERRA MAP · structure = geography · activity = weather"))
 
-    # Territory header + canvas rows
-    prev_end = -1
     for role in sorted_roles:
         y0, y1 = band_rows[role]
         label = _BIOME_LABELS.get(role, role.upper())
-        # Blank separator between territories
-        if prev_end >= 0 and y0 > prev_end + 1:
-            pass  # natural gap from band_rows
-        # Territory label line
         lines.append(_pad(f"  ── {label}"))
-        # Canvas rows for this territory
         for y in range(y0, y1 + 1):
             lines.append(_pad("  " + "".join(canvas[y])))
-        prev_end = y1
 
     lines.append(_pad("  "))
 
-    # ── 8. Numbered legend ───────────────────────────────────────────
+    # ── 7. Numbered legend ───────────────────────────────────────────
     legend_parts: list[str] = []
-    for y, x, node, num in sorted(placements, key=lambda p: p[3]):
+    for _, _, node, num in sorted(placements, key=lambda p: p[3]):
         glyph = _activity_glyph(node["depth"], node["outbox_reachable"])
         name = _fit(node["node_name"], 16)
-        status_flag = ""
+        flag = ""
         if node["status"] == "SLEEPING":
-            status_flag = " 💤"
+            flag = " zzz"
         elif node["status"] == "UNREACHABLE":
-            status_flag = " ⚡"
-        legend_parts.append(f"  {glyph} {num:>2} {name}{status_flag}")
+            flag = " !"
+        legend_parts.append(f"  {glyph} {num:>2} {name}{flag}")
 
-    # Split legend into rows of ~3 items
     items_per_row = 3
     for i in range(0, len(legend_parts), items_per_row):
         row_parts = legend_parts[i : i + items_per_row]

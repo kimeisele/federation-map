@@ -6,7 +6,7 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #1 · 2026-07-20T04:54:58Z│
+│  AGENT FEDERATION · TERRAIN           cycle #1 · 2026-07-20T05:11:12Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
 │  8 nodes · 5 communicating · 202 in flight · 5/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
@@ -50,23 +50,17 @@
 ├──────────────────────────────────────────────────────────────────────┤
 │  TERRA MAP · structure = geography · activity = weather              │
 │  ── RELAY                                                            │
-│      ~    ~    ~    ~    ~  █ ~    ~    ~    ~    ~                  │
-│     ~    ~    ~    ~    ~    ~    ~    ~    ~    ~    ~              │
+│                             █                                        │
 │  ── GOVERN                                                           │
-│    ▲    ▲    ▲    ▲    ▲    ·    ▲    ▲    ▲    ▲    ▲               │
-│   ▲    ▲    ▲    ▲    ▲    ▲    ▲    ▲    ▲    ▲    ▲                │
+│                             ·                                        │
 │  ── RESEARCH                                                         │
-│  ≈    ≈    ≈    ≈    ≈    ≈ ░  ≈    ≈    ≈    ≈    ≈                 │
-│      ≈    ≈    ≈    ≈    ≈    ≈    ≈    ≈    ≈    ≈                  │
+│                             ░                                        │
 │  ── EXEC                                                             │
-│     ▓    ▓    ▓    ▓    ▓   █▓    ▓    ▓    ▓    ▓    ▓              │
-│    ▓    ▓    ▓    ▓    ▓    ▓    ▓    ▓    ▓    ▓    ▓               │
+│                             █                                        │
 │  ── OUTPOST                                                          │
-│   ·    ·   ░·    ·    ·    ·░   ·    ·    · ·  ·    ·                │
-│  ·    ·    ·    ·    ·    ·    ·    ·    ·    ·    ·                 │
+│    ░                  ░                              ·               │
 │  ── SANDBOX                                                          │
-│      ◇    ◇    ◇    ◇    ◇  · ◇    ◇    ◇    ◇    ◇                  │
-│     ◇    ◇    ◇    ◇    ◇    ◇    ◇    ◇    ◇    ◇    ◇              │
+│                             ·                                        │
 │                                                                      │
 │  █  1 agent-internet    ·  2 agent-city    ░  3 agent-research       │
 │  █  4 steward    ░  5 agent-world    ░  6 hermes-sankhya-…           │
