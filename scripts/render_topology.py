@@ -91,18 +91,105 @@ class FixturesLoader:
 
 # ── Phase 1: Discovery ──────────────────────────────────────────────
 
+_TOPIC = "agent-federation-node"
+_SEARCH_API = "https://api.github.com/search/repositories"
+_SEARCH_PER_PAGE = 100
+_SELF_REPO = "kimeisele/federation-map"
+
 
 def _repo_id_to_node_name(repo_id: str) -> str:
     return repo_id.split("/")[-1]
 
 
-def _node_base_url(repo_id: str) -> str:
-    return f"https://raw.githubusercontent.com/{repo_id}/main"
+def _node_base_url(repo_id: str, default_branch: str = "main") -> str:
+    return f"https://raw.githubusercontent.com/{repo_id}/{default_branch}"
+
+
+def _fetch_json_with_headers(url: str, headers: dict) -> dict | list | None:
+    """Fetch JSON with custom headers. Returns None on any failure."""
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=HTTP_TIMEOUT) as resp:
+            return json.loads(resp.read())
+    except Exception:
+        return None
+
+
+def _discover_topic() -> list[dict]:
+    """Discover peers via GitHub topic search (urllib, stdlib only).
+
+    Returns peers from repos tagged 'agent-federation-node'.
+    Graceful: on any failure, returns empty list — caller falls back to seeds.
+    """
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or ""
+    headers = {"User-Agent": _USER_AGENT, "Accept": "application/vnd.github+json"}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+
+    query = f"topic:{_TOPIC}"
+    all_items: list[dict] = []
+    page = 1
+
+    while True:
+        url = f"{_SEARCH_API}?q={query}&per_page={_SEARCH_PER_PAGE}&page={page}"
+        data = _fetch_json_with_headers(url, headers)
+        if not isinstance(data, dict):
+            break
+        items = data.get("items")
+        if not isinstance(items, list):
+            break
+        all_items.extend(items)
+        if len(all_items) >= int(data.get("total_count", 0)):
+            break
+        if len(items) < _SEARCH_PER_PAGE:
+            break
+        page += 1
+
+    if not all_items:
+        return []
+
+    peers: list[dict] = []
+    for repo in all_items:
+        full_name = str(repo.get("full_name", ""))
+        if not full_name:
+            continue
+        if full_name.lower() == _SELF_REPO:
+            continue
+        default_branch = str(repo.get("default_branch", "main"))
+        base = _node_base_url(full_name, default_branch)
+
+        # Fetch descriptor
+        desc_url = f"{base}/.well-known/agent-federation.json"
+        descriptor = _fetch_json(desc_url)
+        if not descriptor or not isinstance(descriptor, dict):
+            continue
+        if descriptor.get("kind") != "agent_federation_descriptor":
+            continue
+
+        repo_id = str(descriptor.get("repo_id", full_name))
+        node_name = _repo_id_to_node_name(repo_id)
+
+        # Fetch peer.json
+        peer_url = f"{base}/data/federation/peer.json"
+        peer_data = _fetch_json(peer_url)
+        peer = peer_data if isinstance(peer_data, dict) else None
+
+        peers.append({
+            "node_name": node_name, "repo_id": repo_id,
+            "descriptor": descriptor, "peer": peer, "base_url": base,
+            "discovery_method": "topic",
+            "default_branch": default_branch,
+        })
+
+    return peers
 
 
 def _discover_live(seed_urls: list[str]) -> list[dict]:
+    """Discover peers: seeds first, then GitHub topic search. Deduplicated."""
     peers: list[dict] = []
     seen: set[str] = set()
+
+    # ── Seeds first (guaranteed core, no auth needed) ────────────────
     for url in seed_urls:
         descriptor = _fetch_json(url)
         if not descriptor or not isinstance(descriptor, dict):
@@ -110,18 +197,38 @@ def _discover_live(seed_urls: list[str]) -> list[dict]:
         if descriptor.get("kind") != "agent_federation_descriptor":
             continue
         repo_id = str(descriptor.get("repo_id", ""))
-        if not repo_id or repo_id in seen:
+        if not repo_id or repo_id.lower() in seen:
             continue
-        seen.add(repo_id)
+        seen.add(repo_id.lower())
+
         node_name = _repo_id_to_node_name(repo_id)
-        base = _node_base_url(repo_id)
+        base = _node_base_url(repo_id, "main")
         peer_url = f"{base}/data/federation/peer.json"
         peer_data = _fetch_json(peer_url)
         peer = peer_data if isinstance(peer_data, dict) else None
+
         peers.append({
             "node_name": node_name, "repo_id": repo_id,
             "descriptor": descriptor, "peer": peer, "base_url": base,
+            "discovery_method": "seed",
         })
+
+    # ── Then topic search (dynamic discovery) ────────────────────────
+    try:
+        topic_peers = _discover_topic()
+    except Exception as e:
+        print(f"Topic discovery failed (continuing with seeds only): {e}",
+              file=sys.stderr)
+        topic_peers = []
+
+    for p in topic_peers:
+        repo_lower = p["repo_id"].lower()
+        if repo_lower not in seen:
+            seen.add(repo_lower)
+            peers.append(p)
+
+    # Deterministic order: sorted by lowercased repo_id
+    peers.sort(key=lambda p: p["repo_id"].lower())
     return peers
 
 
@@ -143,6 +250,8 @@ def _discover_fixtures(fixtures: FixturesLoader) -> list[dict]:
         peers.append({
             "node_name": node_name, "repo_id": repo_id,
             "descriptor": descriptor_raw, "peer": peer, "base_url": "",
+            "discovery_method": "fixtures",
+            "default_branch": "main",
         })
     return peers
 
@@ -886,6 +995,10 @@ def main() -> int:
         "--fixtures", type=Path, default=None,
         help="Load peer surfaces from a local fixtures directory (offline mode)",
     )
+    parser.add_argument(
+        "--discover-dry-run", action="store_true",
+        help="Only run discovery and print peers, then exit (no render)",
+    )
     args = parser.parse_args()
 
     fixtures: FixturesLoader | None = None
@@ -905,6 +1018,14 @@ def main() -> int:
         print("No peers discovered.", file=sys.stderr)
         return 1
 
+    # Dry-run mode: print discovered peers and exit
+    if args.discover_dry_run:
+        for p in peers:
+            method = p.get("discovery_method", "fixtures" if fixtures else "seed")
+            print(f"  {p['repo_id']:<40} ({method})")
+        print(f"\nTotal: {len(peers)} peer(s)")
+        return 0
+
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     peers_json = [
         {
@@ -914,6 +1035,7 @@ def main() -> int:
             "capabilities": p["descriptor"].get("capabilities", []),
             "city_id": p["peer"].get("identity", {}).get("city_id", "") if p["peer"] else "",
             "transport": p["peer"].get("endpoint", {}).get("transport", "") if p["peer"] else "",
+            "discovery_method": p.get("discovery_method", "fixtures" if fixtures else "seed"),
         }
         for p in peers
     ]

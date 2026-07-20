@@ -6,7 +6,7 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #1 · 2026-07-20T05:11:12Z│
+│  AGENT FEDERATION · TERRAIN           cycle #1 · 2026-07-20T05:21:34Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
 │  8 nodes · 5 communicating · 202 in flight · 5/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
