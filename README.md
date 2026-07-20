@@ -6,15 +6,15 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #6 · 2026-07-20T16:17:07Z│
+│  AGENT FEDERATION · TERRAIN           cycle #7 · 2026-07-20T18:21:54Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
-│  8 nodes · 3 communicating · 205 in flight · 3/8 feeds               │
+│  8 nodes · 3 communicating · 201 in flight · 3/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
 │  INTERNET · relay/transport                                          │
 │    █ agent-internet         ▁▁▁▁▁   144                              │
 │────────────────────────────────────────────────────────────────────  │
 │  NODE · execution/citizens                                           │
-│    █ steward                ▃▄▁█▃    60 ↑  feed                      │
+│    █ steward                ▄▁█▃▃    56 ↓  feed                      │
 │    ░ steward-test           █████     1    template                  │
 │    · agent-city             ▁▁▁▁▁     0    silent                    │
 │    · agent-world            ▁▁▁▁▁     0    feed · silent             │
@@ -41,11 +41,11 @@
 │  FEDERATION PULSE                                                    │
 │    nodes         8   ▁▁▁▁▁  steady                                   │
 │    comming       3   ▁▁▁▁▁                                           │
-│    in flight   205   ▃▄▁█▃  ↑  -84                                   │
+│    in flight   201   ▄▁█▃▃  ↓  -4                                    │
 │    feeds       3/8   ▁▁▁▁▁  steady                                   │
 │    busiest     agent-internet · 144 pending                          │
 │    quietest    agent-city · 0 msgs                                   │
-│    ⚠ agent-internet backlog rising 6 cycles                          │
+│    ⚠ agent-internet backlog rising 7 cycles                          │
 ├──────────────────────────────────────────────────────────────────────┤
 │  TERRA MAP · structure = geography · activity = weather              │
 │  ── RELAY                                                            │
