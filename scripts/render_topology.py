@@ -172,8 +172,17 @@ def _count_flows(envelopes: list[dict]) -> tuple[int, dict[str, int], set[str]]:
     for env in envelopes:
         if not isinstance(env, dict):
             continue
-        target = str(env.get("target_city_id", "")).strip()
-        source = str(env.get("source_city_id", "")).strip()
+        # Real federation envelopes use "source"/"target" (agent-internet, steward).
+        # agent-template nadi_send.py uses "source_city_id"/"target_city_id".
+        # Accept both — the field name is the only difference; semantics are identical.
+        target = str(
+            env.get("target", "")
+            or env.get("target_city_id", "")
+        ).strip()
+        source = str(
+            env.get("source", "")
+            or env.get("source_city_id", "")
+        ).strip()
         if target:
             targets[target] = targets.get(target, 0) + 1
         if source:
@@ -184,8 +193,11 @@ def _count_flows(envelopes: list[dict]) -> tuple[int, dict[str, int], set[str]]:
 # ── Phase 3: Authority ──────────────────────────────────────────────
 
 
-def _check_authority_feed_network(base_url: str) -> bool:
-    url = f"{base_url}/authority-feed/latest-authority-manifest.json"
+def _check_authority_feed_network(base_url: str, repo_id: str) -> bool:
+    # The authority feed is published on a dedicated "authority-feed" branch,
+    # not in a directory called "authority-feed/" on main.
+    # repo_id = "kimeisele/steward" → branch URL.
+    url = f"https://raw.githubusercontent.com/{repo_id}/authority-feed/latest-authority-manifest.json"
     data = _fetch_json(url)
     return isinstance(data, dict) and data.get("kind") == "source_authority_feed_manifest"
 
@@ -271,8 +283,17 @@ def _compute_topology(
         depth, targets, sources = outbox if outbox_reachable else (0, {}, set())
         total_in_flight += depth
 
+        # Merge capabilities from both surfaces: descriptor + peer
+        desc_caps = [c.lower() for c in p["descriptor"].get("capabilities", [])]
+        peer_caps = [c.lower() for c in p.get("peer", {}).get("capabilities", [])] if p["peer"] else []
+        merged_caps = sorted(set(desc_caps + peer_caps))
+
+        # Build a merged view for role classification
+        merged_descriptor = dict(p["descriptor"])
+        merged_descriptor["capabilities"] = merged_caps
+
         status = _determine_status(p["descriptor"], outbox_reachable)
-        role = _classify_role(p["descriptor"])
+        role = _classify_role(merged_descriptor)
         layer = str(p["descriptor"].get("layer", "node")).lower()
         has_feed = authority_data.get(node_name, False)
 
@@ -290,7 +311,7 @@ def _compute_topology(
             "has_authority_feed": has_feed,
             "flow_targets": targets,
             "flow_sources": list(sources),
-            "capabilities": p["descriptor"].get("capabilities", []),
+            "capabilities": merged_caps,
         }
 
     # Communicating = outbox reachable AND queue depth > 0
@@ -592,7 +613,194 @@ def _render_full(topology: dict, history: list[dict], cycle: int) -> str:
 {flows}
 {SEP}
 {pulse}
+{SEP}
+{_render_terra_map(topology, history)}
 {BOT}"""
+
+
+# ── Terra Map (spatial panel) ───────────────────────────────────────
+
+# Canvas dimensions
+_CANVAS_W = 54
+_CANVAS_H = 16
+
+# Territory → visual label (kept short — labels are left-edge watermarks)
+_BIOME_LABELS: dict[str, str] = {
+    "RELAY": "RELAY",
+    "GOVERNANCE": "GOVERN",
+    "RESEARCH": "RESEARCH",
+    "EXECUTION": "EXEC",
+    "OUTPOST": "OUTPOST",
+    "OBSERVER": "ORBIT",
+    "PROTOCOL": "PROTOCOL",
+    "TEMPLATE": "SANDBOX",
+    "GENERIC": "OPEN",
+}
+
+# Territory → biome texture glyph
+_BIOME_TEXTURE: dict[str, str] = {
+    "RELAY": "~",
+    "GOVERNANCE": "▲",
+    "RESEARCH": "≈",
+    "EXECUTION": "▓",
+    "OUTPOST": "·",
+    "OBSERVER": "·",
+    "PROTOCOL": "▬",
+    "TEMPLATE": "◇",
+    "GENERIC": " ",
+}
+
+
+def _jaccard_distance(a: set[str], b: set[str]) -> float:
+    """1 - Jaccard similarity. 0 = identical, 1 = completely different."""
+    if not a and not b:
+        return 0.0
+    if not a or not b:
+        return 1.0
+    intersection = len(a & b)
+    union = len(a | b)
+    return 1.0 - (intersection / union)
+
+
+def _render_terra_map(topology: dict, _history: list[dict]) -> str:
+    """Render the spatial Terra Map panel: structure = geography, activity = weather."""
+    nodes = topology["nodes"]
+    if not nodes:
+        return _pad("  (no nodes — map empty)")
+
+    node_list = sorted(nodes.values(), key=lambda n: n["node_name"])
+
+    # ── 1. Territories from role ─────────────────────────────────────
+    territories: dict[str, list[dict]] = {}
+    for n in node_list:
+        territories.setdefault(n["role"], []).append(n)
+
+    # Sort territories: known first by predefined order, then unknown alphabetically
+    _ROLE_ORDER = {r: i for i, r in enumerate(_BIOME_LABELS.keys())}
+    sorted_roles = sorted(
+        territories.keys(),
+        key=lambda r: (_ROLE_ORDER.get(r, 99), r),
+    )
+
+    # ── 2. Within each territory: order by capability similarity ────
+    # Compute capability sets once
+    cap_sets: dict[str, set[str]] = {}
+    for n in node_list:
+        cap_sets[n["node_name"]] = {c.lower() for c in n.get("capabilities", [])}
+
+    for role in sorted_roles:
+        t_nodes = territories[role]
+        if len(t_nodes) <= 1:
+            continue
+        # Greedy chain: start with alphabetically first, place nearest each step
+        ordered = [t_nodes[0]]
+        remaining = t_nodes[1:]
+        while remaining:
+            last = ordered[-1]
+            remaining.sort(
+                key=lambda n: _jaccard_distance(
+                    cap_sets[last["node_name"]], cap_sets[n["node_name"]]
+                )
+            )
+            ordered.append(remaining.pop(0))
+        territories[role] = ordered
+
+    # ── 3. Assign Y bands to territories ─────────────────────────────
+    # Distribute territory rows across canvas height
+    n_territories = len(sorted_roles)
+    if n_territories <= 1:
+        # Single territory: center it
+        band_rows = {sorted_roles[0]: (_CANVAS_H // 2 - 1, _CANVAS_H // 2 + 1)}
+    else:
+        rows_per = max(1, _CANVAS_H // n_territories)
+        band_rows = {}
+        y = 1  # top margin
+        for role in sorted_roles:
+            band_rows[role] = (y, min(y + rows_per - 1, _CANVAS_H - 2))
+            y = min(y + rows_per, _CANVAS_H - 1)
+
+    # ── 4. Place nodes on canvas ─────────────────────────────────────
+    # Canvas: list of lists, (y, x) → glyph
+    canvas = [[" " for _ in range(_CANVAS_W)] for _ in range(_CANVAS_H)]
+
+    # Apply biome background texture (faint, every 4th cell)
+    for role in sorted_roles:
+        texture = _BIOME_TEXTURE.get(role, " ")
+        y0, y1 = band_rows[role]
+        for y in range(y0, y1 + 1):
+            for x in range(_CANVAS_W):
+                if texture != " " and (x + y) % 5 == 0:
+                    canvas[y][x] = texture
+
+    # Place node markers
+    placements: list[tuple[int, int, dict, int]] = []  # (y, x, node, index)
+    for role in sorted_roles:
+        t_nodes = territories[role]
+        y0, y1 = band_rows[role]
+        mid_y = (y0 + y1) // 2
+        n = len(t_nodes)
+        if n == 0:
+            continue
+        margin = 2
+        usable_w = _CANVAS_W - 2 * margin
+        step = usable_w / max(n, 1)
+        for i, node in enumerate(t_nodes):
+            x = margin + int(step * i + step / 2)
+            # Collision resolution
+            orig_x = x
+            offset = 0
+            while (canvas[mid_y][x] not in (" ", _BIOME_TEXTURE.get(role, " "))
+                   and offset < _CANVAS_W):
+                offset += 1
+                x = (orig_x + offset) % _CANVAS_W
+            placements.append((mid_y, x, node, len(placements) + 1))
+
+    # ── 5. Apply weather glyphs ──────────────────────────────────────
+    for y, x, node, num in placements:
+        glyph = _activity_glyph(node["depth"], node["outbox_reachable"])
+        canvas[y][x] = glyph
+
+    # ── 6. Build output: territory header → grid rows ────────────────
+    lines: list[str] = []
+    lines.append(_pad("  TERRA MAP · structure = geography · activity = weather"))
+
+    # Territory header + canvas rows
+    prev_end = -1
+    for role in sorted_roles:
+        y0, y1 = band_rows[role]
+        label = _BIOME_LABELS.get(role, role.upper())
+        # Blank separator between territories
+        if prev_end >= 0 and y0 > prev_end + 1:
+            pass  # natural gap from band_rows
+        # Territory label line
+        lines.append(_pad(f"  ── {label}"))
+        # Canvas rows for this territory
+        for y in range(y0, y1 + 1):
+            lines.append(_pad("  " + "".join(canvas[y])))
+        prev_end = y1
+
+    lines.append(_pad("  "))
+
+    # ── 8. Numbered legend ───────────────────────────────────────────
+    legend_parts: list[str] = []
+    for y, x, node, num in sorted(placements, key=lambda p: p[3]):
+        glyph = _activity_glyph(node["depth"], node["outbox_reachable"])
+        name = _fit(node["node_name"], 16)
+        status_flag = ""
+        if node["status"] == "SLEEPING":
+            status_flag = " 💤"
+        elif node["status"] == "UNREACHABLE":
+            status_flag = " ⚡"
+        legend_parts.append(f"  {glyph} {num:>2} {name}{status_flag}")
+
+    # Split legend into rows of ~3 items
+    items_per_row = 3
+    for i in range(0, len(legend_parts), items_per_row):
+        row_parts = legend_parts[i : i + items_per_row]
+        row = "  ".join(row_parts)
+        lines.append(_pad(row))
+
+    return "\n".join(lines)
 
 
 # ── README injection ────────────────────────────────────────────────
@@ -726,7 +934,7 @@ def main() -> int:
         authority_data[node_name] = (
             _check_authority_feed_fixtures(fixtures, node_name)
             if fixtures
-            else _check_authority_feed_network(p["base_url"])
+            else _check_authority_feed_network(p["base_url"], p["repo_id"])
         )
 
     # ── Phase 4: Topology ────────────────────────────────────────────
