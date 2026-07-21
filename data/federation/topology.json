@@ -6,25 +6,9 @@
     "agent-internet>steward": 34,
     "agent-internet>steward-federation": 18,
     "agent-internet>steward-protocol": 18,
-    "agent-internet>steward-test": 19,
-    "steward>ag_33a18434f030269f": 4,
-    "steward>agent-city": 4,
-    "steward>agent-internet": 4,
-    "steward>agent-music": 4,
-    "steward>agent-red-team": 4,
-    "steward>agent-research": 4,
-    "steward>agent-template": 4,
-    "steward>agent-template-proof-node-01": 4,
-    "steward>agent-village": 4,
-    "steward>agent-world": 4,
-    "steward>hermes-sankhya-25": 4,
-    "steward>steward": 4,
-    "steward>steward-federation": 4,
-    "steward>steward-gateway": 4,
-    "steward>steward-protocol": 4,
-    "steward>steward-test": 4
+    "agent-internet>steward-test": 19
   },
-  "generated_at": "2026-07-21T22:30:30Z",
+  "generated_at": "2026-07-21T23:32:04Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
@@ -133,29 +117,10 @@
         "immune_system",
         "task_execution"
       ],
-      "depth": 64,
-      "depth_bin": 4,
-      "flow_sources": [
-        "ag_fb47bf4a9b820452"
-      ],
-      "flow_targets": {
-        "ag_33a18434f030269f": 4,
-        "agent-city": 4,
-        "agent-internet": 4,
-        "agent-music": 4,
-        "agent-red-team": 4,
-        "agent-research": 4,
-        "agent-template": 4,
-        "agent-template-proof-node-01": 4,
-        "agent-village": 4,
-        "agent-world": 4,
-        "hermes-sankhya-25": 4,
-        "steward": 4,
-        "steward-federation": 4,
-        "steward-gateway": 4,
-        "steward-protocol": 4,
-        "steward-test": 4
-      },
+      "depth": 0,
+      "depth_bin": 0,
+      "flow_sources": [],
+      "flow_targets": {},
       "has_authority_feed": true,
       "layer": "node",
       "node_name": "steward",
@@ -228,9 +193,9 @@
     }
   },
   "summary": {
-    "communicating": 3,
+    "communicating": 2,
     "feeds": 3,
-    "in_flight": 209,
+    "in_flight": 145,
     "total_nodes": 8
   }
 }

@@ -6,19 +6,19 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #23 · 2026-07-21T22:30:30Z│
+│  AGENT FEDERATION · TERRAIN           cycle #24 · 2026-07-21T23:32:04Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
-│  8 nodes · 3 communicating · 209 in flight · 3/8 feeds               │
+│  8 nodes · 2 communicating · 145 in flight · 3/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
 │  INTERNET · relay/transport                                          │
 │    █ agent-internet         ▁▁▁▁▁   144                              │
 │────────────────────────────────────────────────────────────────────  │
 │  NODE · execution/citizens                                           │
-│    █ steward                ██▁██    64 ↑  feed                      │
 │    ░ steward-test           ▁▁▁▁▁     1    template                  │
 │    · agent-city             ▁▁▁▁▁     0    silent                    │
 │    · agent-world            ▁▁▁▁▁     0    feed · silent             │
 │    · steward-protocol       ▁▁▁▁▁     0    feed · silent             │
+│    · steward                █▁██▁     0 ↓  feed · silent             │
 │    ─ steward-federation     ▁▁▁▁▁     —    unreachable               │
 │    ─ agent-research         ▁▁▁▁▁     —    unreachable               │
 │────────────────────────────────────────────────────────────────────  │
@@ -31,21 +31,16 @@
 │    agent-internet       ──▶ agent-world            18  ██            │
 │    agent-internet       ──▶ steward-protocol       18  ██            │
 │    agent-internet       ──▶ steward-federation     18  ██            │
-│    steward              ──▶ agent-city              4  █             │
-│    steward              ──▶ agent-world             4  █             │
-│    steward              ──▶ steward                 4  █             │
-│    steward              ──▶ steward-protocol        4  █             │
-│    steward              ──▶ steward-federation      4  █             │
-│    silent: agent-city, agent-research, agent-world, steward-federa…  │
+│    silent: agent-city, agent-research, agent-world, steward, stewa…  │
 ├──────────────────────────────────────────────────────────────────────┤
 │  FEDERATION PULSE                                                    │
 │    nodes         8   ▁▁▁▁▁  steady                                   │
-│    comming       3   ██▁██  ↑                                        │
-│    in flight   209   ██▁██  ↑  +0                                    │
+│    comming       2   █▁██▁  ↓                                        │
+│    in flight   145   █▁██▁  ↓  -64                                   │
 │    feeds       3/8   ▁▁▁▁▁  steady                                   │
 │    busiest     agent-internet · 144 pending                          │
 │    quietest    agent-city · 0 msgs                                   │
-│    ⚠ agent-internet backlog rising 23 cycles                         │
+│    ⚠ agent-internet backlog rising 24 cycles                         │
 ├──────────────────────────────────────────────────────────────────────┤
 │  TERRA MAP · structure = geography · activity = weather              │
 │  ── RELAY                                                            │
@@ -55,14 +50,14 @@
 │  ── RESEARCH                                                         │
 │                             ─                                        │
 │  ── EXEC                                                             │
-│                             █                                        │
+│                             ·                                        │
 │  ── SANDBOX                                                          │
 │                             ░                                        │
 │  ── OPEN                                                             │
 │    ·                      ·                          ─               │
 │                                                                      │
 │  █  1 agent-internet    ·  2 agent-city    ─  3 agent-research !     │
-│  █  4 steward    ░  5 steward-test    ·  6 agent-world               │
+│  ·  4 steward    ░  5 steward-test    ·  6 agent-world               │
 │  ·  7 steward-protocol    ─  8 steward-federat… !                    │
 └──────────────────────────────────────────────────────────────────────┘
 ```
