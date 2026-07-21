@@ -6,7 +6,7 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #19 · 2026-07-21T16:04:49Z│
+│  AGENT FEDERATION · TERRAIN           cycle #20 · 2026-07-21T17:39:33Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
 │  8 nodes · 3 communicating · 205 in flight · 3/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
@@ -14,7 +14,7 @@
 │    █ agent-internet         ▁▁▁▁▁   144                              │
 │────────────────────────────────────────────────────────────────────  │
 │  NODE · execution/citizens                                           │
-│    █ steward                █▅▁▆▅    60 ↑  feed                      │
+│    █ steward                ▅▁▆▅▅    60 ↓  feed                      │
 │    ░ steward-test           ▁▁▁▁▁     1    template                  │
 │    · agent-city             ▁▁▁▁▁     0    silent                    │
 │    · agent-world            ▁▁▁▁▁     0    feed · silent             │
@@ -41,11 +41,11 @@
 │  FEDERATION PULSE                                                    │
 │    nodes         8   ▁▁▁▁▁  steady                                   │
 │    comming       3   ▁▁▁▁▁                                           │
-│    in flight   205   █▅▁▆▅  ↑  -4                                    │
+│    in flight   205   ▅▁▆▅▅  ↓  +0                                    │
 │    feeds       3/8   ▁▁▁▁▁  steady                                   │
 │    busiest     agent-internet · 144 pending                          │
 │    quietest    agent-city · 0 msgs                                   │
-│    ⚠ agent-internet backlog rising 19 cycles                         │
+│    ⚠ agent-internet backlog rising 20 cycles                         │
 ├──────────────────────────────────────────────────────────────────────┤
 │  TERRA MAP · structure = geography · activity = weather              │
 │  ── RELAY                                                            │
