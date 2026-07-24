@@ -6,15 +6,15 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #62 · 2026-07-24T21:47:01Z│
+│  AGENT FEDERATION · TERRAIN           cycle #63 · 2026-07-24T22:44:26Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
-│  8 nodes · 3 communicating · 209 in flight · 3/8 feeds               │
+│  8 nodes · 3 communicating · 217 in flight · 3/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
 │  INTERNET · relay/transport                                          │
 │    █ agent-internet         ▁▁▁▁▁   144                              │
 │────────────────────────────────────────────────────────────────────  │
 │  NODE · execution/citizens                                           │
-│    █ steward                ▅▁█▅▆    64 ↓  feed                      │
+│    █ steward                ▁█▅▆▇    72 ↑  feed                      │
 │    ░ steward-test           ▁▁▁▁▁     1    template                  │
 │    · agent-city             ▁▁▁▁▁     0    silent                    │
 │    · agent-world            ▁▁▁▁▁     0    feed · silent             │
@@ -40,12 +40,12 @@
 ├──────────────────────────────────────────────────────────────────────┤
 │  FEDERATION PULSE                                                    │
 │    nodes         8   ▁▁▁▁▁  steady                                   │
-│    comming       3   █▁███                                           │
-│    in flight   209   ▅▁█▅▆  ↓  +16                                   │
+│    comming       3   ▁████                                           │
+│    in flight   217   ▁█▅▆▇  ↑  +8                                    │
 │    feeds       3/8   ▁▁▁▁▁  steady                                   │
 │    busiest     agent-internet · 144 pending                          │
 │    quietest    agent-city · 0 msgs                                   │
-│    ⚠ agent-internet backlog rising 62 cycles                         │
+│    ⚠ agent-internet backlog rising 63 cycles                         │
 ├──────────────────────────────────────────────────────────────────────┤
 │  TERRA MAP · structure = geography · activity = weather              │
 │  ── RELAY                                                            │
