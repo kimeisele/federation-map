@@ -33,6 +33,15 @@
   },
   {
     "capabilities": [],
+    "city_id": "agent-world",
+    "layer": null,
+    "node_name": "agent-world",
+    "repo_id": "kimeisele/agent-world",
+    "status": "active",
+    "transport": "filesystem"
+  },
+  {
+    "capabilities": [],
     "city_id": "steward-protocol",
     "layer": null,
     "node_name": "steward-protocol",

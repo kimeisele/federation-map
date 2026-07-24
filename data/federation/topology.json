@@ -7,7 +7,8 @@
     "agent-internet>steward-federation": 18,
     "agent-internet>steward-protocol": 18,
     "agent-internet>steward-test": 19,
-    "steward>ag_4cdffbcf29cf827e": 4,
+    "steward>ag_3310b9b3a356e672": 4,
+    "steward>ag_ce5440164383cad2": 4,
     "steward>agent-city": 4,
     "steward>agent-internet": 4,
     "steward>agent-music": 4,
@@ -24,7 +25,7 @@
     "steward>steward-protocol": 4,
     "steward>steward-test": 4
   },
-  "generated_at": "2026-07-24T09:36:35Z",
+  "generated_at": "2026-07-24T11:20:45Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
@@ -103,6 +104,25 @@
       "role": "RESEARCH",
       "status": "UNREACHABLE"
     },
+    "agent-world": {
+      "capabilities": [
+        "authority-projection",
+        "federation-registry",
+        "role-assignment",
+        "world-governance"
+      ],
+      "depth": 0,
+      "depth_bin": 0,
+      "flow_sources": [],
+      "flow_targets": {},
+      "has_authority_feed": true,
+      "layer": "node",
+      "node_name": "agent-world",
+      "outbox_reachable": true,
+      "repo_id": "kimeisele/agent-world",
+      "role": "GENERIC",
+      "status": "ACTIVE"
+    },
     "steward": {
       "capabilities": [
         "autonomous_daemon",
@@ -114,13 +134,14 @@
         "immune_system",
         "task_execution"
       ],
-      "depth": 64,
+      "depth": 68,
       "depth_bin": 4,
       "flow_sources": [
         "ag_fb47bf4a9b820452"
       ],
       "flow_targets": {
-        "ag_4cdffbcf29cf827e": 4,
+        "ag_3310b9b3a356e672": 4,
+        "ag_ce5440164383cad2": 4,
         "agent-city": 4,
         "agent-internet": 4,
         "agent-music": 4,
@@ -210,8 +231,8 @@
   },
   "summary": {
     "communicating": 3,
-    "feeds": 2,
-    "in_flight": 209,
-    "total_nodes": 7
+    "feeds": 3,
+    "in_flight": 213,
+    "total_nodes": 8
   }
 }

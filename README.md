@@ -6,17 +6,18 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #54 · 2026-07-24T09:36:35Z│
+│  AGENT FEDERATION · TERRAIN           cycle #55 · 2026-07-24T11:20:45Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
-│  7 nodes · 3 communicating · 209 in flight · 2/7 feeds               │
+│  8 nodes · 3 communicating · 213 in flight · 3/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
 │  INTERNET · relay/transport                                          │
 │    █ agent-internet         ▁▁▁▁▁   144                              │
 │────────────────────────────────────────────────────────────────────  │
 │  NODE · execution/citizens                                           │
-│    █ steward                █▅█▁▁    64 ↓  feed                      │
+│    █ steward                ▅█▁▁▅    68 ↑  feed                      │
 │    ░ steward-test           ▁▁▁▁▁     1    template                  │
 │    · agent-city             ▁▁▁▁▁     0    silent                    │
+│    · agent-world            ▁▁▁▁▁     0    feed · silent             │
 │    · steward-protocol       ▁▁▁▁▁     0    feed · silent             │
 │    ─ steward-federation     ▁▁▁▁▁     —    unreachable               │
 │    ─ agent-research         ▁▁▁▁▁     —    unreachable               │
@@ -35,16 +36,16 @@
 │    steward              ──▶ steward                 4  █             │
 │    steward              ──▶ steward-protocol        4  █             │
 │    steward              ──▶ steward-federation      4  █             │
-│    silent: agent-city, agent-research, steward-federation, steward…  │
+│    silent: agent-city, agent-research, agent-world, steward-federa…  │
 ├──────────────────────────────────────────────────────────────────────┤
 │  FEDERATION PULSE                                                    │
-│    nodes         7   ▁▁▁▁▁  steady                                   │
+│    nodes         8   ▁▁▁▁▁  steady                                   │
 │    comming       3   ▁▁▁▁▁                                           │
-│    in flight   209   █▅█▁▁  ↓  +0                                    │
-│    feeds       2/7   ▁▁▁▁▁  steady                                   │
+│    in flight   213   ▅█▁▁▅  ↑  +4                                    │
+│    feeds       3/8   ▁▁▁▁▁  steady                                   │
 │    busiest     agent-internet · 144 pending                          │
 │    quietest    agent-city · 0 msgs                                   │
-│    ⚠ agent-internet backlog rising 54 cycles                         │
+│    ⚠ agent-internet backlog rising 55 cycles                         │
 ├──────────────────────────────────────────────────────────────────────┤
 │  TERRA MAP · structure = geography · activity = weather              │
 │  ── RELAY                                                            │
@@ -58,11 +59,11 @@
 │  ── SANDBOX                                                          │
 │                             ░                                        │
 │  ── OPEN                                                             │
-│    ─                                                 ·               │
+│    ·                      ·                          ─               │
 │                                                                      │
 │  █  1 agent-internet    ·  2 agent-city    ─  3 agent-research !     │
-│  █  4 steward    ░  5 steward-test    ─  6 steward-federat… !        │
-│  ·  7 steward-protocol                                               │
+│  █  4 steward    ░  5 steward-test    ·  6 agent-world               │
+│  ·  7 steward-protocol    ─  8 steward-federat… !                    │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
