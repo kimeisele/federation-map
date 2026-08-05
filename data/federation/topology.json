@@ -1,12 +1,5 @@
 {
   "flows": {
-    "agent-internet>agent-city": 18,
-    "agent-internet>agent-research": 19,
-    "agent-internet>agent-world": 18,
-    "agent-internet>steward": 34,
-    "agent-internet>steward-federation": 18,
-    "agent-internet>steward-protocol": 18,
-    "agent-internet>steward-test": 19,
     "steward>agent-city": 4,
     "steward>agent-internet": 4,
     "steward>agent-music": 4,
@@ -24,7 +17,7 @@
     "steward>steward-protocol": 4,
     "steward>steward-test": 4
   },
-  "generated_at": "2026-08-05T21:51:35Z",
+  "generated_at": "2026-08-05T22:44:43Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
@@ -61,27 +54,17 @@
         "nadi-relay",
         "semantic-search"
       ],
-      "depth": 144,
-      "depth_bin": 4,
-      "flow_sources": [
-        "agent-internet"
-      ],
-      "flow_targets": {
-        "agent-city": 18,
-        "agent-research": 19,
-        "agent-world": 18,
-        "steward": 34,
-        "steward-federation": 18,
-        "steward-protocol": 18,
-        "steward-test": 19
-      },
+      "depth": 0,
+      "depth_bin": -1,
+      "flow_sources": [],
+      "flow_targets": {},
       "has_authority_feed": false,
       "layer": "internet",
       "node_name": "agent-internet",
-      "outbox_reachable": true,
+      "outbox_reachable": false,
       "repo_id": "kimeisele/agent-internet",
       "role": "RELAY",
-      "status": "ACTIVE"
+      "status": "UNREACHABLE"
     },
     "agent-research": {
       "capabilities": [
@@ -212,25 +195,23 @@
         "test-target",
         "testing"
       ],
-      "depth": 1,
-      "depth_bin": 1,
-      "flow_sources": [
-        "steward-test"
-      ],
+      "depth": 0,
+      "depth_bin": -1,
+      "flow_sources": [],
       "flow_targets": {},
       "has_authority_feed": false,
       "layer": "node",
       "node_name": "steward-test",
-      "outbox_reachable": true,
+      "outbox_reachable": false,
       "repo_id": "kimeisele/steward-test",
       "role": "TEMPLATE",
-      "status": "ACTIVE"
+      "status": "UNREACHABLE"
     }
   },
   "summary": {
-    "communicating": 3,
+    "communicating": 1,
     "feeds": 3,
-    "in_flight": 209,
+    "in_flight": 64,
     "total_nodes": 8
   }
 }
