@@ -7,8 +7,7 @@
     "agent-internet>steward-federation": 18,
     "agent-internet>steward-protocol": 18,
     "agent-internet>steward-test": 19,
-    "steward>ag_3a223b9a0c43a649": 4,
-    "steward>ag_4cdffbcf29cf827e": 4,
+    "steward>ag_9dc31c715951c843": 4,
     "steward>agent-city": 4,
     "steward>agent-internet": 4,
     "steward>agent-music": 4,
@@ -18,6 +17,7 @@
     "steward>agent-template-proof-node-01": 4,
     "steward>agent-village": 4,
     "steward>agent-world": 4,
+    "steward>federation-hq": 4,
     "steward>hermes-sankhya-25": 4,
     "steward>steward": 4,
     "steward>steward-federation": 4,
@@ -25,7 +25,7 @@
     "steward>steward-protocol": 4,
     "steward>steward-test": 4
   },
-  "generated_at": "2026-08-05T15:40:51Z",
+  "generated_at": "2026-08-05T17:12:09Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
@@ -140,8 +140,7 @@
         "ag_fb47bf4a9b820452"
       ],
       "flow_targets": {
-        "ag_3a223b9a0c43a649": 4,
-        "ag_4cdffbcf29cf827e": 4,
+        "ag_9dc31c715951c843": 4,
         "agent-city": 4,
         "agent-internet": 4,
         "agent-music": 4,
@@ -151,6 +150,7 @@
         "agent-template-proof-node-01": 4,
         "agent-village": 4,
         "agent-world": 4,
+        "federation-hq": 4,
         "hermes-sankhya-25": 4,
         "steward": 4,
         "steward-federation": 4,
