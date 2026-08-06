@@ -6,16 +6,16 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #210 · 2026-08-06T14:37:18Z│
+│  AGENT FEDERATION · TERRAIN           cycle #211 · 2026-08-06T22:10:14Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
-│  8 nodes · 3 communicating · 209 in flight · 3/8 feeds               │
+│  8 nodes · 3 communicating · 213 in flight · 3/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
 │  INTERNET · relay/transport                                          │
-│    █ agent-internet         █████   144                              │
+│    █ agent-internet         ▁▁▁▁▁   144                              │
 │────────────────────────────────────────────────────────────────────  │
 │  NODE · execution/citizens                                           │
-│    █ steward                ▆█▅▁▅    64    feed                      │
-│    ░ steward-test           █████     1    template                  │
+│    █ steward                █▅▁▅▆    68 ↑  feed                      │
+│    ░ steward-test           ▁▁▁▁▁     1    template                  │
 │    · agent-city             ▁▁▁▁▁     0    silent                    │
 │    · agent-world            ▁▁▁▁▁     0    feed · silent             │
 │    · steward-protocol       ▁▁▁▁▁     0    feed · silent             │
@@ -40,8 +40,8 @@
 ├──────────────────────────────────────────────────────────────────────┤
 │  FEDERATION PULSE                                                    │
 │    nodes         8   ▁▁▁▁▁  steady                                   │
-│    comming       3   █████                                           │
-│    in flight   209   ▇█▇▆▇     +32                                   │
+│    comming       3   ▁▁▁▁▁                                           │
+│    in flight   213   █▅▁▅▆  ↑  +4                                    │
 │    feeds       3/8   ▁▁▁▁▁  steady                                   │
 │    busiest     agent-internet · 144 pending                          │
 │    quietest    agent-city · 0 msgs                                   │
