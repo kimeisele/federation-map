@@ -8,7 +8,7 @@
     "agent-internet>steward-protocol": 18,
     "agent-internet>steward-test": 19,
     "steward>ag_0c5abf9f07d3047f": 2,
-    "steward>ag_4cdffbcf29cf827e": 2,
+    "steward>ag_ce5440164383cad2": 2,
     "steward>agent-city": 2,
     "steward>agent-internet": 2,
     "steward>agent-music": 2,
@@ -26,7 +26,7 @@
     "steward>steward-protocol": 2,
     "steward>steward-test": 2
   },
-  "generated_at": "2026-08-08T15:36:49Z",
+  "generated_at": "2026-08-08T16:00:05Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
@@ -142,7 +142,7 @@
       ],
       "flow_targets": {
         "ag_0c5abf9f07d3047f": 2,
-        "ag_4cdffbcf29cf827e": 2,
+        "ag_ce5440164383cad2": 2,
         "agent-city": 2,
         "agent-internet": 2,
         "agent-music": 2,
