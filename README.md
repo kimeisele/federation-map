@@ -6,15 +6,15 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #329 · 2026-08-11T21:58:16Z│
+│  AGENT FEDERATION · TERRAIN           cycle #330 · 2026-08-11T22:52:23Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
-│  8 nodes · 3 communicating · 253 in flight · 3/8 feeds               │
+│  8 nodes · 3 communicating · 180 in flight · 3/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
 │  INTERNET · relay/transport                                          │
 │    █ agent-internet         ▁▁▁▁▁   144                              │
 │────────────────────────────────────────────────────────────────────  │
 │  NODE · execution/citizens                                           │
-│    █ steward                ▄▆▁▁█   108 ↑  feed                      │
+│    ▓ steward                ▆▁▁█▃    35 ↑  feed                      │
 │    ░ steward-test           ▁▁▁▁▁     1    template                  │
 │    · agent-city             ▁▁▁▁▁     0    silent                    │
 │    · agent-world            ▁▁▁▁▁     0    feed · silent             │
@@ -31,17 +31,17 @@
 │    agent-internet       ──▶ agent-world            18  ██            │
 │    agent-internet       ──▶ steward-protocol       18  ██            │
 │    agent-internet       ──▶ steward-federation     18  ██            │
-│    steward              ──▶ agent-city              6  █             │
-│    steward              ──▶ agent-world             6  █             │
-│    steward              ──▶ steward                 6  █             │
-│    steward              ──▶ steward-protocol        6  █             │
-│    steward              ──▶ steward-federation      6  █             │
+│    steward              ──▶ agent-city              2  █             │
+│    steward              ──▶ agent-world             2  █             │
+│    steward              ──▶ steward                 2  █             │
+│    steward              ──▶ steward-protocol        2  █             │
+│    steward              ──▶ steward-federation      2  █             │
 │    silent: agent-city, agent-research, agent-world, steward-federa…  │
 ├──────────────────────────────────────────────────────────────────────┤
 │  FEDERATION PULSE                                                    │
 │    nodes         8   ▁▁▁▁▁  steady                                   │
-│    comming       3   ██▁▁█  ↑                                        │
-│    in flight   253   ▄▆▁▁█  ↑  +108                                  │
+│    comming       3   █▁▁██  ↑                                        │
+│    in flight   180   ▆▁▁█▃  ↑  -73                                   │
 │    feeds       3/8   ▁▁▁▁▁  steady                                   │
 │    busiest     agent-internet · 144 pending                          │
 │    quietest    agent-city · 0 msgs                                   │
@@ -55,14 +55,14 @@
 │  ── RESEARCH                                                         │
 │                             ─                                        │
 │  ── EXEC                                                             │
-│                             █                                        │
+│                             ▓                                        │
 │  ── SANDBOX                                                          │
 │                             ░                                        │
 │  ── OPEN                                                             │
 │    ·                      ·                          ─               │
 │                                                                      │
 │  █  1 agent-internet    ·  2 agent-city    ─  3 agent-research !     │
-│  █  4 steward    ░  5 steward-test    ·  6 agent-world               │
+│  ▓  4 steward    ░  5 steward-test    ·  6 agent-world               │
 │  ·  7 steward-protocol    ─  8 steward-federat… !                    │
 └──────────────────────────────────────────────────────────────────────┘
 ```
