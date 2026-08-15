@@ -7,8 +7,8 @@
     "agent-internet>steward-federation": 18,
     "agent-internet>steward-protocol": 18,
     "agent-internet>steward-test": 19,
-    "steward>ag_d35ed53bca093a38": 4,
-    "steward>ag_e2305ecef502d300": 4,
+    "steward>ag_3a223b9a0c43a649": 4,
+    "steward>ag_b12c0c44d063dc8f": 4,
     "steward>ag_e8f906204a1ea3c7": 4,
     "steward>agent-city": 4,
     "steward>agent-internet": 4,
@@ -27,7 +27,7 @@
     "steward>steward-protocol": 4,
     "steward>steward-test": 4
   },
-  "generated_at": "2026-08-15T17:59:25Z",
+  "generated_at": "2026-08-15T18:39:37Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
@@ -142,8 +142,8 @@
         "ag_c0993c40cfb06e92"
       ],
       "flow_targets": {
-        "ag_d35ed53bca093a38": 4,
-        "ag_e2305ecef502d300": 4,
+        "ag_3a223b9a0c43a649": 4,
+        "ag_b12c0c44d063dc8f": 4,
         "ag_e8f906204a1ea3c7": 4,
         "agent-city": 4,
         "agent-internet": 4,
