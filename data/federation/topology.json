@@ -7,6 +7,9 @@
     "agent-internet>steward-federation": 18,
     "agent-internet>steward-protocol": 18,
     "agent-internet>steward-test": 19,
+    "steward>ag_3a223b9a0c43a649": 3,
+    "steward>ag_d35ed53bca093a38": 3,
+    "steward>ag_e2305ecef502d300": 3,
     "steward>agent-city": 3,
     "steward>agent-internet": 3,
     "steward>agent-music": 3,
@@ -19,12 +22,11 @@
     "steward>federation-hq": 3,
     "steward>hermes-sankhya-25": 3,
     "steward>steward": 3,
-    "steward>steward-federation": 3,
     "steward>steward-gateway": 3,
     "steward>steward-protocol": 3,
     "steward>steward-test": 3
   },
-  "generated_at": "2026-08-16T22:29:10Z",
+  "generated_at": "2026-08-16T22:50:04Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
@@ -133,12 +135,15 @@
         "immune_system",
         "task_execution"
       ],
-      "depth": 48,
-      "depth_bin": 3,
+      "depth": 54,
+      "depth_bin": 4,
       "flow_sources": [
         "ag_c0993c40cfb06e92"
       ],
       "flow_targets": {
+        "ag_3a223b9a0c43a649": 3,
+        "ag_d35ed53bca093a38": 3,
+        "ag_e2305ecef502d300": 3,
         "agent-city": 3,
         "agent-internet": 3,
         "agent-music": 3,
@@ -151,7 +156,6 @@
         "federation-hq": 3,
         "hermes-sankhya-25": 3,
         "steward": 3,
-        "steward-federation": 3,
         "steward-gateway": 3,
         "steward-protocol": 3,
         "steward-test": 3
@@ -230,7 +234,7 @@
   "summary": {
     "communicating": 3,
     "feeds": 3,
-    "in_flight": 193,
+    "in_flight": 199,
     "total_nodes": 8
   }
 }
