@@ -1,42 +1,7 @@
 {
-  "flows": {
-    "agent-internet>agent-city": 18,
-    "agent-internet>agent-research": 19,
-    "agent-internet>agent-world": 18,
-    "agent-internet>steward": 34,
-    "agent-internet>steward-federation": 18,
-    "agent-internet>steward-protocol": 18,
-    "agent-internet>steward-test": 19
-  },
-  "generated_at": "2026-08-17T13:44:37Z",
+  "flows": {},
+  "generated_at": "2026-08-17T14:49:51Z",
   "nodes": {
-    "agent-city": {
-      "capabilities": [
-        "city_governance",
-        "code_execution",
-        "discussions",
-        "economy",
-        "federation_bridge",
-        "federation_relay",
-        "governance",
-        "heartbeat_observer",
-        "immigration",
-        "multi_agent_runtime",
-        "wiki",
-        "wiki_publishing"
-      ],
-      "depth": 0,
-      "depth_bin": 0,
-      "flow_sources": [],
-      "flow_targets": {},
-      "has_authority_feed": false,
-      "layer": "node",
-      "node_name": "agent-city",
-      "outbox_reachable": true,
-      "repo_id": "kimeisele/agent-city",
-      "role": "GOVERNANCE",
-      "status": "ACTIVE"
-    },
     "agent-internet": {
       "capabilities": [
         "authority-projection",
@@ -45,46 +10,16 @@
         "nadi-relay",
         "semantic-search"
       ],
-      "depth": 144,
-      "depth_bin": 4,
-      "flow_sources": [
-        "agent-internet"
-      ],
-      "flow_targets": {
-        "agent-city": 18,
-        "agent-research": 19,
-        "agent-world": 18,
-        "steward": 34,
-        "steward-federation": 18,
-        "steward-protocol": 18,
-        "steward-test": 19
-      },
-      "has_authority_feed": false,
-      "layer": "internet",
-      "node_name": "agent-internet",
-      "outbox_reachable": true,
-      "repo_id": "kimeisele/agent-internet",
-      "role": "RELAY",
-      "status": "ACTIVE"
-    },
-    "agent-research": {
-      "capabilities": [
-        "cross_domain_analysis",
-        "meta_analysis",
-        "methodology_review",
-        "open_inquiry",
-        "research_synthesis"
-      ],
       "depth": 0,
       "depth_bin": -1,
       "flow_sources": [],
       "flow_targets": {},
       "has_authority_feed": false,
-      "layer": "node",
-      "node_name": "agent-research",
+      "layer": "internet",
+      "node_name": "agent-internet",
       "outbox_reachable": false,
-      "repo_id": "agent-research",
-      "role": "RESEARCH",
+      "repo_id": "kimeisele/agent-internet",
+      "role": "RELAY",
       "status": "UNREACHABLE"
     },
     "agent-world": {
@@ -95,16 +30,16 @@
         "world-governance"
       ],
       "depth": 0,
-      "depth_bin": 0,
+      "depth_bin": -1,
       "flow_sources": [],
       "flow_targets": {},
-      "has_authority_feed": true,
+      "has_authority_feed": false,
       "layer": "node",
       "node_name": "agent-world",
-      "outbox_reachable": true,
+      "outbox_reachable": false,
       "repo_id": "kimeisele/agent-world",
       "role": "GENERIC",
-      "status": "ACTIVE"
+      "status": "UNREACHABLE"
     },
     "steward": {
       "capabilities": [
@@ -118,56 +53,30 @@
         "task_execution"
       ],
       "depth": 0,
-      "depth_bin": 0,
+      "depth_bin": -1,
       "flow_sources": [],
       "flow_targets": {},
-      "has_authority_feed": true,
+      "has_authority_feed": false,
       "layer": "node",
       "node_name": "steward",
-      "outbox_reachable": true,
+      "outbox_reachable": false,
       "repo_id": "kimeisele/steward",
       "role": "EXECUTION",
-      "status": "ACTIVE"
+      "status": "UNREACHABLE"
     },
-    "steward-federation": {
-      "capabilities": [
-        "federation-relay",
-        "federation_relay",
-        "mailbox_routing",
-        "message-bus",
-        "nadi-hub",
-        "nadi_hub"
-      ],
+    "steward-protocol": {
+      "capabilities": [],
       "depth": 0,
       "depth_bin": -1,
       "flow_sources": [],
       "flow_targets": {},
       "has_authority_feed": false,
       "layer": "node",
-      "node_name": "steward-federation",
-      "outbox_reachable": false,
-      "repo_id": "kimeisele/steward-federation",
-      "role": "GENERIC",
-      "status": "UNREACHABLE"
-    },
-    "steward-protocol": {
-      "capabilities": [
-        "authority-projection",
-        "kernel-verification",
-        "protocol-governance",
-        "substrate-runtime"
-      ],
-      "depth": 0,
-      "depth_bin": 0,
-      "flow_sources": [],
-      "flow_targets": {},
-      "has_authority_feed": true,
-      "layer": "node",
       "node_name": "steward-protocol",
-      "outbox_reachable": true,
+      "outbox_reachable": false,
       "repo_id": "kimeisele/steward-protocol",
       "role": "GENERIC",
-      "status": "ACTIVE"
+      "status": "UNREACHABLE"
     },
     "steward-test": {
       "capabilities": [
@@ -177,25 +86,23 @@
         "test-target",
         "testing"
       ],
-      "depth": 1,
-      "depth_bin": 1,
-      "flow_sources": [
-        "steward-test"
-      ],
+      "depth": 0,
+      "depth_bin": -1,
+      "flow_sources": [],
       "flow_targets": {},
       "has_authority_feed": false,
       "layer": "node",
       "node_name": "steward-test",
-      "outbox_reachable": true,
+      "outbox_reachable": false,
       "repo_id": "kimeisele/steward-test",
       "role": "TEMPLATE",
-      "status": "ACTIVE"
+      "status": "UNREACHABLE"
     }
   },
   "summary": {
-    "communicating": 2,
-    "feeds": 3,
-    "in_flight": 145,
-    "total_nodes": 8
+    "communicating": 0,
+    "feeds": 0,
+    "in_flight": 0,
+    "total_nodes": 5
   }
 }
