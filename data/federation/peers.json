@@ -15,13 +15,30 @@
     "transport": "filesystem"
   },
   {
+    "capabilities": [
+      "governance",
+      "immigration",
+      "economy",
+      "code_execution",
+      "federation_bridge",
+      "discussions",
+      "wiki"
+    ],
+    "city_id": "",
+    "layer": null,
+    "node_name": "agent-city",
+    "repo_id": "kimeisele/agent-city",
+    "status": "active",
+    "transport": ""
+  },
+  {
     "capabilities": [],
-    "city_id": "agent-world",
+    "city_id": "",
     "layer": null,
     "node_name": "agent-world",
     "repo_id": "kimeisele/agent-world",
     "status": "active",
-    "transport": "filesystem"
+    "transport": ""
   },
   {
     "capabilities": [],
@@ -38,25 +55,10 @@
       "message-bus",
       "federation-relay"
     ],
-    "city_id": "steward-federation",
+    "city_id": "",
     "layer": null,
     "node_name": "steward-federation",
     "repo_id": "kimeisele/steward-federation",
-    "status": "active",
-    "transport": ""
-  },
-  {
-    "capabilities": [
-      "research_synthesis",
-      "cross_domain_analysis",
-      "meta_analysis",
-      "methodology_review",
-      "open_inquiry"
-    ],
-    "city_id": "",
-    "layer": null,
-    "node_name": "agent-research",
-    "repo_id": "agent-research",
     "status": "active",
     "transport": ""
   },
@@ -77,17 +79,5 @@
     "repo_id": "kimeisele/steward",
     "status": "active",
     "transport": "filesystem"
-  },
-  {
-    "capabilities": [
-      "test-target",
-      "healing-sandbox"
-    ],
-    "city_id": "steward-test",
-    "layer": null,
-    "node_name": "steward-test",
-    "repo_id": "kimeisele/steward-test",
-    "status": "active",
-    "transport": ""
   }
 ]
