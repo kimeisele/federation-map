@@ -8,17 +8,22 @@
     "agent-internet>steward-protocol": 18,
     "agent-internet>steward-test": 19
   },
-  "generated_at": "2026-08-17T15:35:04Z",
+  "generated_at": "2026-08-17T15:53:49Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
+        "city_governance",
         "code_execution",
         "discussions",
         "economy",
         "federation_bridge",
+        "federation_relay",
         "governance",
+        "heartbeat_observer",
         "immigration",
-        "wiki"
+        "multi_agent_runtime",
+        "wiki",
+        "wiki_publishing"
       ],
       "depth": 0,
       "depth_bin": 0,
@@ -63,7 +68,12 @@
       "status": "ACTIVE"
     },
     "agent-world": {
-      "capabilities": [],
+      "capabilities": [
+        "authority-projection",
+        "federation-registry",
+        "role-assignment",
+        "world-governance"
+      ],
       "depth": 0,
       "depth_bin": 0,
       "flow_sources": [],
@@ -76,34 +86,14 @@
       "role": "GENERIC",
       "status": "ACTIVE"
     },
-    "steward": {
-      "capabilities": [
-        "autonomous_daemon",
-        "ci_automation",
-        "code_analysis",
-        "cross_repo_diagnostic",
-        "federation_bridge",
-        "healing",
-        "immune_system",
-        "task_execution"
-      ],
-      "depth": 0,
-      "depth_bin": -1,
-      "flow_sources": [],
-      "flow_targets": {},
-      "has_authority_feed": true,
-      "layer": "node",
-      "node_name": "steward",
-      "outbox_reachable": false,
-      "repo_id": "kimeisele/steward",
-      "role": "EXECUTION",
-      "status": "UNREACHABLE"
-    },
     "steward-federation": {
       "capabilities": [
         "federation-relay",
+        "federation_relay",
+        "mailbox_routing",
         "message-bus",
-        "nadi-hub"
+        "nadi-hub",
+        "nadi_hub"
       ],
       "depth": 0,
       "depth_bin": -1,
@@ -139,8 +129,8 @@
   },
   "summary": {
     "communicating": 1,
-    "feeds": 3,
+    "feeds": 2,
     "in_flight": 144,
-    "total_nodes": 6
+    "total_nodes": 5
   }
 }

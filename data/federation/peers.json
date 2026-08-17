@@ -24,21 +24,21 @@
       "discussions",
       "wiki"
     ],
-    "city_id": "",
+    "city_id": "agent-city",
     "layer": null,
     "node_name": "agent-city",
     "repo_id": "kimeisele/agent-city",
     "status": "active",
-    "transport": ""
+    "transport": "filesystem"
   },
   {
     "capabilities": [],
-    "city_id": "",
+    "city_id": "agent-world",
     "layer": null,
     "node_name": "agent-world",
     "repo_id": "kimeisele/agent-world",
     "status": "active",
-    "transport": ""
+    "transport": "filesystem"
   },
   {
     "capabilities": [],
@@ -55,29 +55,11 @@
       "message-bus",
       "federation-relay"
     ],
-    "city_id": "",
+    "city_id": "steward-federation",
     "layer": null,
     "node_name": "steward-federation",
     "repo_id": "kimeisele/steward-federation",
     "status": "active",
     "transport": ""
-  },
-  {
-    "capabilities": [
-      "code_analysis",
-      "task_execution",
-      "ci_automation",
-      "federation_bridge",
-      "autonomous_daemon",
-      "healing",
-      "immune_system",
-      "cross_repo_diagnostic"
-    ],
-    "city_id": "steward",
-    "layer": null,
-    "node_name": "steward",
-    "repo_id": "kimeisele/steward",
-    "status": "active",
-    "transport": "filesystem"
   }
 ]

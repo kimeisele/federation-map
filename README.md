@@ -6,19 +6,18 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #517 · 2026-08-17T15:35:04Z│
+│  AGENT FEDERATION · TERRAIN           cycle #518 · 2026-08-17T15:53:49Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
-│  6 nodes · 1 communicating · 144 in flight · 3/6 feeds               │
+│  5 nodes · 1 communicating · 144 in flight · 2/5 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
 │  INTERNET · relay/transport                                          │
-│    █ agent-internet         ██▁██   144 ↑                            │
+│    █ agent-internet         █▁███   144                              │
 │────────────────────────────────────────────────────────────────────  │
 │  NODE · execution/citizens                                           │
 │    · agent-city             ▁▁▁▁▁     0    silent                    │
 │    · agent-world            ▁▁▁▁▁     0    feed · silent             │
 │    · steward-protocol       ▁▁▁▁▁     0    feed · silent             │
 │    ─ steward-federation     ▁▁▁▁▁     —    unreachable               │
-│    ─ steward                ▅▁▁▁▁     —    feed · unreachable        │
 │────────────────────────────────────────────────────────────────────  │
 ├──────────────────────────────────────────────────────────────────────┤
 │  FEDERATION FLOWS · directed, from live NADI envelopes               │
@@ -29,13 +28,13 @@
 │    agent-internet       ──▶ agent-world            18  ██            │
 │    agent-internet       ──▶ steward-protocol       18  ██            │
 │    agent-internet       ──▶ steward-federation     18  ██            │
-│    silent: agent-city, agent-world, steward, steward-federation, s…  │
+│    silent: agent-city, agent-world, steward-federation, steward-pr…  │
 ├──────────────────────────────────────────────────────────────────────┤
 │  FEDERATION PULSE                                                    │
-│    nodes         6   ▁▁▁▁▁  steady                                   │
-│    comming       1   █▆▁▆▃  ↑                                        │
-│    in flight   144   ▇▅▁▅▅  ↑  -1                                    │
-│    feeds       3/6   ▁▁▁▁▁  steady                                   │
+│    nodes         5   ▁▁▁▁▁  steady                                   │
+│    comming       1   ▆▁▆▃▃  ↓                                        │
+│    in flight   144   ▆▁▆▆▆  ↓  +0                                    │
+│    feeds       2/5   ▁▁▁▁▁  steady                                   │
 │    busiest     agent-internet · 144 pending                          │
 │    quietest    agent-city · 0 msgs                                   │
 ├──────────────────────────────────────────────────────────────────────┤
@@ -44,20 +43,20 @@
 │                                                                      │
 │                             █                                        │
 │                                                                      │
+│                                                                      │
 │  ── GOVERN                                                           │
 │                                                                      │
 │                             ·                                        │
 │                                                                      │
-│  ── EXEC                                                             │
-│                                                                      │
-│                             ─                                        │
 │                                                                      │
 │  ── OPEN                                                             │
-│                             ─                        ·               │
+│                           ·                                          │
+│                                                      ─               │
 │    ·                                                                 │
 │                                                                      │
-│  █  1 agent-internet    ·  2 agent-city    ─  3 steward !            │
-│  ·  4 agent-world    ─  5 steward-federat… !    ·  6 steward-protocol│
+│                                                                      │
+│  █  1 agent-internet    ·  2 agent-city    ·  3 agent-world          │
+│  ·  4 steward-protocol    ─  5 steward-federat… !                    │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
