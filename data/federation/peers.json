@@ -7,12 +7,12 @@
       "semantic-search",
       "authority-projection"
     ],
-    "city_id": "",
+    "city_id": "agent-internet",
     "layer": "internet",
     "node_name": "agent-internet",
     "repo_id": "kimeisele/agent-internet",
     "status": "active",
-    "transport": ""
+    "transport": "filesystem"
   },
   {
     "capabilities": [],
@@ -25,10 +25,38 @@
   },
   {
     "capabilities": [],
-    "city_id": "",
+    "city_id": "steward-protocol",
     "layer": null,
     "node_name": "steward-protocol",
     "repo_id": "kimeisele/steward-protocol",
+    "status": "active",
+    "transport": "filesystem"
+  },
+  {
+    "capabilities": [
+      "nadi-hub",
+      "message-bus",
+      "federation-relay"
+    ],
+    "city_id": "steward-federation",
+    "layer": null,
+    "node_name": "steward-federation",
+    "repo_id": "kimeisele/steward-federation",
+    "status": "active",
+    "transport": ""
+  },
+  {
+    "capabilities": [
+      "research_synthesis",
+      "cross_domain_analysis",
+      "meta_analysis",
+      "methodology_review",
+      "open_inquiry"
+    ],
+    "city_id": "",
+    "layer": null,
+    "node_name": "agent-research",
+    "repo_id": "agent-research",
     "status": "active",
     "transport": ""
   },
