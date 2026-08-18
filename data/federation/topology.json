@@ -6,9 +6,26 @@
     "agent-internet>steward": 34,
     "agent-internet>steward-federation": 18,
     "agent-internet>steward-protocol": 18,
-    "agent-internet>steward-test": 19
+    "agent-internet>steward-test": 19,
+    "steward>ag_5405b5ab20893c80": 2,
+    "steward>agent-city": 2,
+    "steward>agent-internet": 2,
+    "steward>agent-music": 2,
+    "steward>agent-red-team": 2,
+    "steward>agent-research": 2,
+    "steward>agent-template": 2,
+    "steward>agent-template-proof-node-01": 2,
+    "steward>agent-village": 2,
+    "steward>agent-world": 2,
+    "steward>federation-hq": 2,
+    "steward>hermes-sankhya-25": 2,
+    "steward>steward": 2,
+    "steward>steward-federation": 2,
+    "steward>steward-gateway": 2,
+    "steward>steward-protocol": 2,
+    "steward>steward-test": 2
   },
-  "generated_at": "2026-08-18T13:48:41Z",
+  "generated_at": "2026-08-18T14:17:21Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
@@ -117,10 +134,30 @@
         "immune_system",
         "task_execution"
       ],
-      "depth": 0,
-      "depth_bin": 0,
-      "flow_sources": [],
-      "flow_targets": {},
+      "depth": 34,
+      "depth_bin": 3,
+      "flow_sources": [
+        "ag_29e7f4d5cd3eae8e"
+      ],
+      "flow_targets": {
+        "ag_5405b5ab20893c80": 2,
+        "agent-city": 2,
+        "agent-internet": 2,
+        "agent-music": 2,
+        "agent-red-team": 2,
+        "agent-research": 2,
+        "agent-template": 2,
+        "agent-template-proof-node-01": 2,
+        "agent-village": 2,
+        "agent-world": 2,
+        "federation-hq": 2,
+        "hermes-sankhya-25": 2,
+        "steward": 2,
+        "steward-federation": 2,
+        "steward-gateway": 2,
+        "steward-protocol": 2,
+        "steward-test": 2
+      },
       "has_authority_feed": true,
       "layer": "node",
       "node_name": "steward",
@@ -193,9 +230,9 @@
     }
   },
   "summary": {
-    "communicating": 2,
+    "communicating": 3,
     "feeds": 3,
-    "in_flight": 145,
+    "in_flight": 179,
     "total_nodes": 8
   }
 }
