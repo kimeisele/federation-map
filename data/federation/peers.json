@@ -64,21 +64,6 @@
   },
   {
     "capabilities": [
-      "research_synthesis",
-      "cross_domain_analysis",
-      "meta_analysis",
-      "methodology_review",
-      "open_inquiry"
-    ],
-    "city_id": "",
-    "layer": null,
-    "node_name": "agent-research",
-    "repo_id": "agent-research",
-    "status": "active",
-    "transport": ""
-  },
-  {
-    "capabilities": [
       "code_analysis",
       "task_execution",
       "ci_automation",
