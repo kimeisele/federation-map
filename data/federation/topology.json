@@ -7,7 +7,6 @@
     "agent-internet>steward-federation": 18,
     "agent-internet>steward-protocol": 18,
     "agent-internet>steward-test": 19,
-    "steward>ag_3a223b9a0c43a649": 4,
     "steward>agent-city": 4,
     "steward>agent-internet": 4,
     "steward>agent-music": 4,
@@ -25,7 +24,7 @@
     "steward>steward-protocol": 4,
     "steward>steward-test": 4
   },
-  "generated_at": "2026-08-21T08:50:54Z",
+  "generated_at": "2026-08-21T09:21:14Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
@@ -134,13 +133,12 @@
         "immune_system",
         "task_execution"
       ],
-      "depth": 68,
+      "depth": 64,
       "depth_bin": 4,
       "flow_sources": [
         "ag_29e7f4d5cd3eae8e"
       ],
       "flow_targets": {
-        "ag_3a223b9a0c43a649": 4,
         "agent-city": 4,
         "agent-internet": 4,
         "agent-music": 4,
@@ -232,7 +230,7 @@
   "summary": {
     "communicating": 3,
     "feeds": 3,
-    "in_flight": 213,
+    "in_flight": 209,
     "total_nodes": 8
   }
 }
