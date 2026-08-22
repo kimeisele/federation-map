@@ -6,15 +6,15 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #690 · 2026-08-22T07:37:57Z│
+│  AGENT FEDERATION · TERRAIN           cycle #691 · 2026-08-22T08:02:37Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
-│  8 nodes · 3 communicating · 230 in flight · 3/8 feeds               │
+│  8 nodes · 3 communicating · 196 in flight · 3/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
 │  INTERNET · relay/transport                                          │
 │    █ agent-internet         ▁▁▁▁▁   144                              │
 │────────────────────────────────────────────────────────────────────  │
 │  NODE · execution/citizens                                           │
-│    █ steward                ▁▅▄▅█    85 ↑  feed                      │
+│    █ steward                ▅▅▅█▁    51 ↓  feed                      │
 │    ░ steward-test           ▁▁▁▁▁     1    template                  │
 │    · agent-city             ▁▁▁▁▁     0    silent                    │
 │    · agent-world            ▁▁▁▁▁     0    feed · silent             │
@@ -31,17 +31,17 @@
 │    agent-internet       ──▶ agent-world            18  ██            │
 │    agent-internet       ──▶ steward-protocol       18  ██            │
 │    agent-internet       ──▶ steward-federation     18  ██            │
-│    steward              ──▶ agent-city              5  █             │
-│    steward              ──▶ agent-world             5  █             │
-│    steward              ──▶ steward                 5  █             │
-│    steward              ──▶ steward-protocol        5  █             │
-│    steward              ──▶ steward-federation      5  █             │
+│    steward              ──▶ agent-city              3  █             │
+│    steward              ──▶ agent-world             3  █             │
+│    steward              ──▶ steward                 3  █             │
+│    steward              ──▶ steward-protocol        3  █             │
+│    steward              ──▶ steward-federation      3  █             │
 │    silent: agent-city, agent-research, agent-world, steward-federa…  │
 ├──────────────────────────────────────────────────────────────────────┤
 │  FEDERATION PULSE                                                    │
 │    nodes         8   ▁▁▁▁▁  steady                                   │
 │    comming       3   ▁▁▁▁▁                                           │
-│    in flight   230   ▁▅▄▅█  ↑  +13                                   │
+│    in flight   196   ▅▅▅█▁  ↓  -34                                   │
 │    feeds       3/8   ▁▁▁▁▁  steady                                   │
 │    busiest     agent-internet · 144 pending                          │
 │    quietest    agent-city · 0 msgs                                   │
