@@ -7,7 +7,7 @@
     "agent-internet>steward-federation": 18,
     "agent-internet>steward-protocol": 18,
     "agent-internet>steward-test": 19,
-    "steward>ag_3a223b9a0c43a649": 4,
+    "steward>ag_8c8be6df8bf48278": 4,
     "steward>agent-city": 4,
     "steward>agent-internet": 4,
     "steward>agent-music": 4,
@@ -26,7 +26,7 @@
     "steward>steward-protocol": 4,
     "steward>steward-test": 4
   },
-  "generated_at": "2026-11-10T03:45:34Z",
+  "generated_at": "2026-11-10T18:53:22Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
@@ -141,7 +141,7 @@
         "ag_699dcb9603df8804"
       ],
       "flow_targets": {
-        "ag_3a223b9a0c43a649": 4,
+        "ag_8c8be6df8bf48278": 4,
         "agent-city": 4,
         "agent-internet": 4,
         "agent-music": 4,
