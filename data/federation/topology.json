@@ -25,7 +25,7 @@
     "steward>steward-protocol": 4,
     "steward>steward-test": 4
   },
-  "generated_at": "2026-11-11T05:53:40Z",
+  "generated_at": "2026-11-11T13:59:36Z",
   "nodes": {
     "agent-city": {
       "capabilities": [
@@ -137,7 +137,7 @@
       "depth": 68,
       "depth_bin": 4,
       "flow_sources": [
-        "ag_699dcb9603df8804"
+        "ag_233bc4d4f38e4509"
       ],
       "flow_targets": {
         "agent-city": 4,
