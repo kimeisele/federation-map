@@ -6,15 +6,15 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  AGENT FEDERATION · TERRAIN           cycle #1199 · 2026-11-15T02:09:54Z│
+│  AGENT FEDERATION · TERRAIN           cycle #1200 · 2026-11-15T09:31:09Z│
 │  elevation = live NADI activity                · ░ ▒ ▓ █  low → high │
-│  8 nodes · 3 communicating · 214 in flight · 3/8 feeds               │
+│  8 nodes · 3 communicating · 213 in flight · 3/8 feeds               │
 ├──────────────────────────────────────────────────────────────────────┤
 │  INTERNET · relay/transport                                          │
 │    █ agent-internet         ▁▁▁▁▁   144                              │
 │────────────────────────────────────────────────────────────────────  │
 │  NODE · execution/citizens                                           │
-│    █ steward                ▅▄▅▄▄    69 ↓  feed                      │
+│    █ steward                ▄▅▄▄▄    68    feed                      │
 │    ░ steward-test           ▁▁▁▁▁     1    template                  │
 │    · agent-city             ▁▁▁▁▁     0    silent                    │
 │    · agent-world            ▁▁▁▁▁     0    feed · silent             │
@@ -41,7 +41,7 @@
 │  FEDERATION PULSE                                                    │
 │    nodes         8   ▁▁▁▁▁  steady                                   │
 │    comming       3   ▁▁▁▁▁                                           │
-│    in flight   214   ▅▄▅▄▄  ↓  +1                                    │
+│    in flight   213   ▄▅▄▄▄     -1                                    │
 │    feeds       3/8   ▁▁▁▁▁  steady                                   │
 │    busiest     agent-internet · 144 pending                          │
 │    quietest    agent-city · 0 msgs                                   │
